@@ -1,34 +1,30 @@
 #pragma once
 #include<iostream>
 #include <vector>
-
-struct Vector3D {
-	double x;
-	double y;
-	double z;
-};
+#include "Vector3D.h"
 
 class Shape {
 	std::string name;
 	Vector3D scopePosition;
 	Vector3D size;//size of the scope
-
-	Shape(std::string name, Vector3D scopePosition, Vector3D size);
+	friend std::ostream& operator<<(std::ostream &strm, const Shape &shape);
+public:
+	Shape(std::string name, Vector3D& scopePosition, Vector3D& size);
 
 	/* Adds translation vector to the scope position*/
-	Shape tranlate(Vector3D translation);
+	Shape& tranlate(Vector3D& translation);
 
 	/* Rotates the respective axis of the coordinate system */
-	Shape rotate(Vector3D angles);
+	Shape& rotate(Vector3D& angles);
 
 	/* Sets the size of the scope */
-	Shape setSize(Vector3D newSize);
+	Shape& setSize(Vector3D& newSize);
 
 	/* Pops the current scope on a stack */
-	Shape pop();
+	Shape& pop();
 
 	/* Pushes the current scope on a stack */
-	Shape push();
+	Shape& push();
 
 	/* Adds an instance of a geometric primitive with identifier objId */
 	Shape getInstance(std::string objId);
@@ -45,4 +41,7 @@ class Shape {
 	a -> Comp(type, param) { A | B | ... | Z }
 	Where type identifies the type of the component split with associated parameters param(if any).*/
 	std::vector<Shape> componentSplit(std::string type, int param, std::string * newShapeNames);
+
 };
+/* Analog to Java.lang.Object.toString() */
+std::ostream& operator<<(std::ostream &strm, const Shape &shape); 

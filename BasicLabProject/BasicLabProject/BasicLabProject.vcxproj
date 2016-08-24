@@ -126,11 +126,14 @@
   <ItemGroup>
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Shape.cpp" />
+    <ClCompile Include="Vector3D.cpp" />
+    <ClCompile Include="Visualiser.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Parser.h" />
     <ClInclude Include="Shape.h" />
     <ClInclude Include="ShapeTree.h" />
+    <ClInclude Include="Vector3D.h" />
     <ClInclude Include="Visualizer.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
