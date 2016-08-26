@@ -1,9 +1,15 @@
 ﻿  Main.cpp
   Shape.cpp
-  Generating code
-  0 of 93 functions ( 0.0%) were compiled, the rest were copied from previous compilation.
-    0 functions were new in current compilation
-  Finished generating code
-    7 functions had inline decision re-evaluated but remain unchanged
-  BasicLabProject.vcxproj -> C:\Users\Elchin\Procedural-Modeling-of-Buildings\BasicLabProject\Release\BasicLabProject.exe
-  BasicLabProject.vcxproj -> C:\Users\Elchin\Procedural-Modeling-of-Buildings\BasicLabProject\Release\BasicLabProject.pdb (Full PDB)
+  Vector3D.cpp
+  Visualiser.cpp
+Visualiser.cpp(242): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+Visualiser.cpp(244): warning C4244: '-=': conversion from 'double' to 'float', possible loss of data
+Visualiser.cpp(245): warning C4244: '-=': conversion from 'double' to 'float', possible loss of data
+Visualiser.cpp(249): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+Visualiser.cpp(251): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
+Visualiser.cpp(252): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
+Visualiser.cpp(259): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+Visualiser.cpp(261): warning C4244: '-=': conversion from 'double' to 'float', possible loss of data
+Visualiser.cpp(262): warning C4244: '-=': conversion from 'double' to 'float', possible loss of data
+Visualiser.cpp(317): error C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  C:\Program Files (x86)\Windows Kits\10\Include\10.0.10240.0\ucrt\stdio.h(1769): note: see declaration of 'sprintf'

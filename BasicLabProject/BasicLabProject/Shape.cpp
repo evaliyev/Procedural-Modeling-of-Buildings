@@ -14,6 +14,7 @@ Shape& Shape::tranlate(Vector3D& translation) {
 
 Shape& Shape::rotate(Vector3D& angles) {
 	//TODO finish this function
+	return *this;
 }
 
 Shape& Shape::setSize(Vector3D& newSize) {
@@ -23,10 +24,12 @@ Shape& Shape::setSize(Vector3D& newSize) {
 
 Shape& Shape::pop(){
 	//TODO finish this function
+	return *this;
 }
 
 Shape& Shape::push() {
 	//TODO finish this function
+	return *this;
 }
 
 //TODO implement rest of functions 

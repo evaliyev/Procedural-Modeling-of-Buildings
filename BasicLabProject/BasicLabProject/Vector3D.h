@@ -2,14 +2,17 @@
 #include<iostream>
 
 class Vector3D {
-	double x;
-	double y;
-	double z;
+	float x;
+	float y;
+	float z;
 	friend std::ostream& operator<<(std::ostream &strm, const Vector3D &vector);
 public:
 	Vector3D() = default; 
-	Vector3D(double x, double y, double z);
+	Vector3D(float x, float y, float z);
 	void add(Vector3D that);
+	float getX();
+	float getY();
+	float getZ();
 };
 /* Analog to Java.lang.Object.toString() */
 std::ostream& operator<<(std::ostream &strm, const Vector3D &vector);
