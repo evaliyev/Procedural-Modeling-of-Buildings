@@ -13,6 +13,7 @@ public:
 	float getX();
 	float getY();
 	float getZ();
+	void set(Vector3D& that);
 };
 /* Analog to Java.lang.Object.toString() */
 std::ostream& operator<<(std::ostream &strm, const Vector3D &vector);

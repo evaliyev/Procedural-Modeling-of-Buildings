@@ -2,14 +2,19 @@
 #include<iostream>
 #include <vector>
 #include "Vector3D.h"
+#include "Type.h"
 
 class Shape {
 	std::string name;
 	Vector3D scopePosition;
 	Vector3D size;//size of the scope
+	Type type; //scope/non-scope
 	friend std::ostream& operator<<(std::ostream &strm, const Shape &shape);
+
+    Vector3D rotate_around_axis(Vector3D& position, float degrees, int axe);
+
 public:
-	Shape(std::string name, Vector3D& scopePosition, Vector3D& size);
+	Shape(std::string name, Vector3D& scopePosition, Vector3D& size, Type type);
 
 	/* Adds translation vector to the scope position*/
 	Shape& tranlate(Vector3D& translation);
@@ -30,11 +35,11 @@ public:
 	Shape getInstance(std::string objId);
 
 	/* Split rule splits the current scope along one axis.
-	Example: fac -> Subdiv(”Y”,3.5,0.3,3,3,3){ floor | ledge | floor | floor | floor } */
+	Example: fac -> Subdiv(ï¿½Yï¿½,3.5,0.3,3,3,3){ floor | ledge | floor | floor | floor } */
 	std::vector<Shape> split(int axis, double* ratios, std::string * newShapeNames, int numberOfNewShapes);
 
 	/* To allow for larger scale changes in the split rules, we often want to tile a specified element.
-	Example :floor -> Repeat(”X”, 2) { B } */
+	Example :floor -> Repeat(ï¿½Xï¿½, 2) { B } */
 	std::vector<Shape> repeat(int axis, int times, std::string newShapesNames);
 
 	/* Splits the shape into shapes of lesser dimensions :

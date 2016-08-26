@@ -18,6 +18,14 @@ float Vector3D::getY() { return this->y; }
 
 float Vector3D::getZ() { return this->z; }
 
+void Vector3D::set(Vector3D& vector) {
+    this->x = vector.getX();
+    this->y = vector.getY();
+    this->z = vector.getZ();
+};
+
+
+
 std::ostream& operator<<(std::ostream &strm, const Vector3D &vector) {
 	return strm << "V("<<vector.x<<","<< vector.y <<","<< vector.z <<")";
 }
