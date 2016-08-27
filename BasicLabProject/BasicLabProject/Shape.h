@@ -3,6 +3,7 @@
 #include <vector>
 #include "Vector3D.h"
 #include "Type.h"
+#include <stack>
 
 class Shape {
 	std::string name;
@@ -26,10 +27,12 @@ public:
 	Shape& setSize(Vector3D& newSize);
 
 	/* Pops the current scope on a stack */
-	Shape& pop();
+	static Shape& pop(std::stack<Shape> shapes);
 
 	/* Pushes the current scope on a stack */
-	Shape& push();
+	static Shape& push(std::stack<Shape> shapes, Shape& newShape);
+
+    std::string getName();
 
 	/* Adds an instance of a geometric primitive with identifier objId */
 	Shape getInstance(std::string objId);
