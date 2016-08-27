@@ -36,7 +36,7 @@ public:
 
 	/* Split rule splits the current scope along one axis.
 	Example: fac -> Subdiv(�Y�,3.5,0.3,3,3,3){ floor | ledge | floor | floor | floor } */
-	std::vector<Shape> split(int axis, double* ratios, std::string * newShapeNames, int numberOfNewShapes);
+	std::vector<Shape> split(int axis, std::vector<double> ratios, std::vector<std::string> newShapeNames);
 
 	/* To allow for larger scale changes in the split rules, we often want to tile a specified element.
 	Example :floor -> Repeat(�X�, 2) { B } */
