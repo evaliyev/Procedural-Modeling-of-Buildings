@@ -1,4 +1,5 @@
 #include "Vector3D.h"
+#include <stdexcept>
 
 
 Vector3D::Vector3D(float x, float y, float z) {
@@ -20,7 +21,7 @@ float Vector3D::getElement(int axis) {
         case 2:
             return this->z;
         default:
-            return 0.0;
+            throw std::invalid_argument("No such axis!");
     }
 }
 
@@ -36,7 +37,7 @@ void Vector3D::setElement(int axis, float value) {
             this->z = value;
             break;
         default:
-            break;
+            throw std::invalid_argument("No such axis!");
     }
 }
 

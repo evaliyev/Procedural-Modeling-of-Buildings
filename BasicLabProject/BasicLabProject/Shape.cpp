@@ -11,10 +11,9 @@ Shape::Shape(std::string name, Vector3D &scopePosition, Vector3D &size, Type typ
     this->scopePosition = scopePosition;
     this->size = size;
     this->type = type;
-
 }
 
-Shape &Shape::tranlate(Vector3D &translation) {
+Shape &Shape::translate(Vector3D &translation) {
     this->scopePosition.add(translation);
     return *this;
 }
@@ -89,9 +88,9 @@ std::vector<Shape> Shape::split(int axis, std::vector<double> ratios, std::vecto
     return successors;
 }
 
-Shape &Shape::push(std::stack<Shape> shapes, Shape &newShape) {
-    shapes.push(newShape);
-    return newShape;
+void Shape::push(std::stack<Shape> shapes, Shape &shape) {
+    shapes.push(shape);
+    //shape.name or no_name?
 }
 
 Shape &Shape::pop(std::stack<Shape> shapes) {
@@ -102,6 +101,24 @@ Shape &Shape::pop(std::stack<Shape> shapes) {
 
 std::string Shape::getName() { return this->name; }
 
+std::vector<Shape> Shape::repeat(int axis, int times, std::string newShapesNames) {
+    std::vector<Shape> successors;
+    float ratio = this->size.getElement(axis)/times;
+
+    Vector3D newPosition = this->scopePosition.copy();
+    Vector3D newSize = this->size.copy();
+    float positionChange = this->scopePosition.getElement(axis);
+
+    for(int i=0; i<times; i++){
+        positionChange += i*ratio;
+        newPosition.setElement(axis,positionChange);
+        newSize.setElement(axis,ratio);
+        Shape newShape(newShapesNames,newPosition,newSize, this->type);
+        successors.push_back(newShape);
+    }
+
+    return successors;
+}
 
 std::ostream &operator<<(std::ostream &strm, const Shape &shape) {
     return strm << "Shape(" << shape.name << "," << shape.scopePosition << "," << shape.size << ")";
