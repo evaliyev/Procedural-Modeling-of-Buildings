@@ -18,6 +18,14 @@ Shape &Shape::translate(Vector3D &translation) {
     return *this;
 }
 
+Vector3D& Shape::getScopePostition() { return this->scopePosition; }
+
+Vector3D& Shape::getSize() { return this->size; }
+
+Type Shape::getType() {return this->type; }
+
+void Shape::setType(Type type) {this->type = type; }
+
 Vector3D Shape::rotate_around_axis(Vector3D &position, float degrees, int axis) {
     float angle = PI * degrees / 180.0;
     float cos_angle = cos(angle);

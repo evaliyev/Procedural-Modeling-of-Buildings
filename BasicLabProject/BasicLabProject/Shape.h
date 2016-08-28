@@ -34,6 +34,14 @@ public:
     /* Pushes the current scope on a stack */
     static void push(std::stack<Shape> shapes, Shape &shape);
 
+    void setType(Type type);
+
+    Type getType();
+
+    Vector3D& getScopePostition();
+
+    Vector3D& getSize();
+
     std::string getName();
 
     /* Adds an instance of a geometric primitive with identifier objId */
