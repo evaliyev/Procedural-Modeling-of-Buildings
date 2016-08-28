@@ -1,5 +1,6 @@
 
 #include <iterator>
+#include <algorithm> 
 #include <stack>
 #include <string>
 #include <fstream>
@@ -68,7 +69,6 @@ std::function<std::vector<Shape>(Shape)> Parser::stringToRule(std::string string
 				rule(x);
 				Shape& currentShape = (*processing).top();
 				currentShape.translate(Vector3D(std::stof(arguments[0]), std::stof(arguments[1]), std::stof(arguments[2])));
-				Shape& ss = (*processing).top();
 			};
 		}
 
@@ -104,7 +104,7 @@ std::function<std::vector<Shape>(Shape)> Parser::stringToRule(std::string string
 				(*result).push_back(currentShape);
 			};
 		}
-		else if (!tokens[i].find("Repeat")) { // Set new scope size
+		else if (!tokens[i].find("Repeat")) { 
 			auto arguments = splitString(splitString(tokens[i], '(', ')')[1], ',', ',');
 			auto parameters = splitString(splitString(tokens[i], '{', '}')[1], ',', ',');
 			rule = [=,&result](Shape x) {
@@ -112,6 +112,19 @@ std::function<std::vector<Shape>(Shape)> Parser::stringToRule(std::string string
 				Shape& currentShape = (*processing).top();
 				auto newShapes = currentShape.repeat(std::stoi(arguments[0]), std::stoi(arguments[1]), parameters[0]);
 				std::copy(newShapes.begin(), newShapes.end(), std::back_inserter((*result)));
+			};
+		}
+		else if (!tokens[i].find("Subdiv")) {
+			auto arguments = splitString(splitString(tokens[i], '(', ')')[1], ',', ',');
+			auto parameters = splitString(splitString(tokens[i], '{', '}')[1], ',', ',');
+			rule = [=,&arguments, &result](Shape x) {
+				rule(x);
+				Shape& currentShape = (*processing).top();
+				int axis =std::stoi(arguments[0]);
+				std::vector<float> ratios;
+				std::transform(arguments.begin() + 1, arguments.end(), ratios.begin(), [](std::string x) { return  std::stof(x); });
+				auto newShapes = currentShape.split(axis,ratios,parameters);
+				std::copy(newShapes.begin(), newShapes.end(), std::back_inserter((*result))); //save new shape to result
 			};
 		}
 	}

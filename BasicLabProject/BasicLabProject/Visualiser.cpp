@@ -1,11 +1,4 @@
-#include <stdio.h>
-#include <GL\glut.h>
 #include "Visualizer.h"
-#include "Vector3D.h"
-
-#ifdef WIN32
-#include <windows.h>
-#endif
 
 std::vector<Shape> *shapesToBeDrawn;
 bool bUsePredefinedCamera = true;
@@ -353,8 +346,4 @@ void drawShapes(std::vector<Shape> shapes, int argc, char **argv) {
 
 	initGlut(argc, argv);
 	glutMainLoop();
-
 }
-
-
-

@@ -48,11 +48,14 @@ public:
     Shape getInstance(std::string objId);
 
     /* Split rule splits the current scope along one axis.
-    Example: fac -> Subdiv(�Y�,3.5,0.3,3,3,3){ floor | ledge | floor | floor | floor } */
-    std::vector<Shape> split(int axis, std::vector<double> ratios, std::vector<std::string> newShapeNames);
+    Example: fac -> Subdiv(1,3.5,0.3,3,3,3){ floor | ledge | floor | floor | floor } 
+	Axes x=0, y=1, z=2 */
+    std::vector<Shape> split(int axis, std::vector<float> ratios, std::vector<std::string> newShapeNames);
 
     /* To allow for larger scale changes in the split rules, we often want to tile a specified element.
-    Example :floor -> Repeat(�X�, 2) { B } */
+    Example :floor -> Repeat(0, 2) { B }.
+	Axes x=0, y=1, z=2 
+	*/
     std::vector<Shape> repeat(int axis, int times, std::string newShapesNames);
 
     /* Splits the shape into shapes of lesser dimensions :
