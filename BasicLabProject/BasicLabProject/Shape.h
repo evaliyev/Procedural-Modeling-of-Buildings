@@ -38,7 +38,7 @@ public:
 
     Type getType();
 
-    Vector3D& getScopePostition();
+    Vector3D& getScopePosition();
 
     Vector3D& getSize();
 

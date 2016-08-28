@@ -18,7 +18,7 @@ Shape &Shape::translate(Vector3D &translation) {
     return *this;
 }
 
-Vector3D& Shape::getScopePostition() { return this->scopePosition; }
+Vector3D& Shape::getScopePosition() { return this->scopePosition; }
 
 Vector3D& Shape::getSize() { return this->size; }
 

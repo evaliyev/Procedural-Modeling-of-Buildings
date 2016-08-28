@@ -1,5 +1,6 @@
 #pragma once
 #include "Vector3D.h"
+#include "Shape.h"
 
 // GLUT callbacks and functions
 void initGlut(int argc, char **argv);
@@ -14,6 +15,7 @@ void keyboardFunc(unsigned char key, int x, int y);
 void countFrames(void);
 void renderBitmapString(float x, float y, float z, void *font, char *string);
 
-void start(int argc, char **argv);
-void drawBlock(Vector3D basePoint, Vector3D size);//draw cuboid
+void drawShapes(std::vector<Shape> shapes, int argc, char **argv);
+void drawBlock(Vector3D& basePoint, Vector3D& size);//draw cuboid
+void drawCylinder(Vector3D& basePoint, Vector3D& size);
 void drawPlain(float x, float z, float sizeX, float sizeZ);
