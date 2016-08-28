@@ -13,14 +13,14 @@ c:\users\elchi\onedrive\documents\procedural-modeling-of-buildings\basiclabproje
 c:\users\elchi\onedrive\documents\procedural-modeling-of-buildings\basiclabproject\basiclabproject\visualiser.cpp(226): warning C4473: 'printf' : not enough arguments passed for format string
   c:\users\elchi\onedrive\documents\procedural-modeling-of-buildings\basiclabproject\basiclabproject\visualiser.cpp(226): note: placeholders and their parameters expect 3 variadic arguments, but 2 were provided
   c:\users\elchi\onedrive\documents\procedural-modeling-of-buildings\basiclabproject\basiclabproject\visualiser.cpp(226): note: the missing variadic argument 3 is required by format string '%2.2f'
+  Vector3D.cpp
   Shape.cpp
 c:\users\elchi\onedrive\documents\procedural-modeling-of-buildings\basiclabproject\basiclabproject\shape.cpp(7): warning C4305: 'initializing': truncation from 'double' to 'float'
 c:\users\elchi\onedrive\documents\procedural-modeling-of-buildings\basiclabproject\basiclabproject\shape.cpp(30): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
 c:\users\elchi\onedrive\documents\procedural-modeling-of-buildings\basiclabproject\basiclabproject\shape.cpp(89): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
 c:\users\elchi\onedrive\documents\procedural-modeling-of-buildings\basiclabproject\basiclabproject\shape.cpp(91): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
-  Generating Code...
-  Skipping... (no relevant changes detected)
   Parser.cpp
   Main.cpp
+  Generating Code...
   BasicLabProject.vcxproj -> C:\Users\elchi\OneDrive\Documents\Procedural-Modeling-of-Buildings\BasicLabProject\x64\Debug\BasicLabProject.exe
   BasicLabProject.vcxproj -> C:\Users\elchi\OneDrive\Documents\Procedural-Modeling-of-Buildings\BasicLabProject\x64\Debug\BasicLabProject.pdb (Partial PDB)
