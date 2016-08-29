@@ -8,8 +8,7 @@
 #include <functional>
 
 struct Node {
-    Shape currentShape;
-    Node *parent;
+    Shape shape;
     std::vector<Node *> children;
 };
 
@@ -17,9 +16,11 @@ class ShapeTree {
     Node *root;
 public:
     ShapeTree();
-    Node* insert(Shape& shape, Node* parent);
+    std::vector<Node *> applyRules(Node * current, std::vector<std::function<std::vector<Shape>(Shape)>> rules);
+    std::vector<Node *> insert(Node *parent, std::vector<Shape> successors);
 
-    static std::vector<Shape> buildTree(std::vector<std::function<std::vector<Shape>(Shape)>> rules, Shape& axiom);
+    std::vector<Shape> buildTree(std::vector<std::function<std::vector<Shape>(Shape)>> rules, Shape& axiom);
+
 
 };
 
