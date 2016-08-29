@@ -17,6 +17,7 @@ class Shape {
     Vector3D rotate_around_axis(Vector3D &position, float degrees, int axe);
 
 public:
+    Shape() = default;
     Shape(std::string name, Vector3D &scopePosition, Vector3D &size, Type type);
 
     /* Adds translation vector to the scope position*/

@@ -68,7 +68,6 @@ Shape &Shape::rotate(Vector3D &angles) {
     return *this;
 }
 
-
 Shape &Shape::setSize(Vector3D &newSize) {
     this->size = newSize;
     return *this;
@@ -129,7 +128,7 @@ std::vector<Shape> Shape::repeat(int axis, int times, std::string newShapesNames
 }
 
 std::ostream &operator<<(std::ostream &strm, const Shape &shape) {
-    return strm << "Shape(" << shape.name << "," << shape.scopePosition << "," << shape.size << ")";
+    return strm << "Shape(" << shape.name << "," << shape.scopePosition << "," << shape.size << "," << shape.type << ")";
 }
 
 

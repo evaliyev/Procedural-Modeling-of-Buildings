@@ -7,9 +7,32 @@
 #include "Shape.h"
 #include <functional>
 
-struct Node {
+class Node {
     Shape shape;
     std::vector<Node *> children;
+public:
+    Node(Shape& shape, std::vector<Node *> children){
+        this->shape = shape;
+        this->children = children;
+    }
+
+    Node(const Node &other){
+        this->shape = other.shape;
+        this->children = other.children;
+    }
+
+    Shape & getShape(){
+        return this->shape;
+    }
+
+    std::vector<Node *> getChildren(){
+        return this->children;
+    }
+
+    void addChild(Node * child){
+        this->children.push_back(child);
+    }
+
 };
 
 class ShapeTree {

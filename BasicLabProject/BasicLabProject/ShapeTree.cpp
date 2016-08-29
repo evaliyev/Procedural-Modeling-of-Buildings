@@ -10,6 +10,7 @@
 #include "Shape.h"
 #include <deque>
 
+
 ShapeTree::ShapeTree() {
     this->root = NULL;
 }
@@ -17,41 +18,47 @@ ShapeTree::ShapeTree() {
 std::vector<Node *> ShapeTree::applyRules(Node *current, std::vector<std::function<std::vector<Shape>(Shape)>> rules) {
     std::vector<Shape> successors;
     for (int i = 0; i < rules.size(); i++) {
-        std::vector<Shape> result = rules[i](current->shape);
-        successors.insert(result.begin(), result.end(), successors.begin());
+        std::vector<Shape> result = rules[i](current->getShape());
+        successors.reserve(successors.size() + result.size());
+        successors.insert(successors.end(), result.begin(), result.end());
     }
-
 
     for (int i = 0; i < successors.size(); i++) {
-        Node *child;
-        child->shape = successors[i];
-        current->children.push_back(child);
+        std::vector<Node *> children;
+        Node *child = new Node(successors[i], children);
+        current->addChild(child);
     }
 
-    return current->children;
+    return current->getChildren();
 }
 
 
 std::vector<Shape> ShapeTree::buildTree(std::vector<std::function<std::vector<Shape>(Shape)>> rules, Shape &axiom) {
     std::vector<Shape> leafShapes;
     std::deque<Node *> shapeQueue;
-    Node *current;
-    current->shape = axiom;
+    std::vector<Node *> children;
+    Node *current = new Node(axiom, children);
     this->root = current;
     shapeQueue.push_back(current);
+    std::cout<<shapeQueue.size()<<std::endl;
+
 
     while (!shapeQueue.empty()) {
         shapeQueue.pop_front();
+        std::cout<<shapeQueue.size()<<std::endl;
+        std::cout<<current->getShape()<<std::endl;
+
         std::vector<Node *> children = applyRules(current, rules);
         for (int j = 0; j < children.size(); j++) {
-            if (children[j]->shape.getType() == SCOPE)
+            std::cout<<children[j]->getShape()<<std::endl;
+            if (children[j]->getShape().getType() == SCOPE)
                 shapeQueue.push_back(children[j]);
 
-            else if (children[j]->shape.getType() != INACTIVE)
-                leafShapes.push_back(children[j]->shape);
+            else if (children[j]->getShape().getType() != INACTIVE)
+                leafShapes.push_back(children[j]->getShape());
         }
-        current->shape.setType(INACTIVE);
-        current = shapeQueue.at(0);
+        current->getShape().setType(INACTIVE);
+        current = shapeQueue.front();
     }
     return leafShapes;
 }
