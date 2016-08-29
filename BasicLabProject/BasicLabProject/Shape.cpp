@@ -18,7 +18,7 @@ Shape &Shape::translate(Vector3D &translation) {
     return *this;
 }
 
-Vector3D& Shape::getScopePostition() { return this->scopePosition; }
+Vector3D& Shape::getScopePosition() { return this->scopePosition; }
 
 Vector3D& Shape::getSize() { return this->size; }
 
@@ -74,7 +74,7 @@ Shape &Shape::setSize(Vector3D &newSize) {
     return *this;
 }
 
-std::vector<Shape> Shape::split(int axis, std::vector<double> ratios, std::vector<std::string> newShapeNames) {
+std::vector<Shape> Shape::split(int axis, std::vector<float> ratios, std::vector<std::string> newShapeNames) {
     std::vector<Shape> successors;
     if (ratios.size() != newShapeNames.size()) {
         std::cout << "Illegal split, num of ratios and names should be the same" << std::endl;

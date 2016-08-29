@@ -1,12 +1,6 @@
-#include <stdio.h>
-#include <GL\glut.h>
 #include "Visualizer.h"
-#include "Vector3D.h"
 
-#ifdef WIN32
-#include <windows.h>
-#endif
-
+std::vector<Shape> *shapesToBeDrawn;
 bool bUsePredefinedCamera = true;
 bool bFullsreen = false;
 int nWindowID;
@@ -56,9 +50,22 @@ void displayFunc(void) {
 	glRotatef(navigationRotation[0], 1.0f, 0.0f, 0.0f);
 	glRotatef(navigationRotation[1], 0.0f, 1.0f, 0.0f);
 	
-	
+	std::vector<Shape> &shapes = (*shapesToBeDrawn);
 	drawPlain(0.0, 0.0, 100.0, 100.0);
-	drawBlock(Vector3D(40, 0, 40), Vector3D(20, 20, 20));
+	for (int i = 0; i < shapes.size(); i++){
+		Shape& currentShape = shapes[i];
+		switch (currentShape.getType()){
+		case CUBE: 
+			drawBlock(currentShape.getScopePosition(), currentShape.getSize());
+			break;
+		case CYLINDER:
+			drawCylinder(currentShape.getScopePosition(), currentShape.getSize());
+			break;
+		default:
+			throw "Undrowable type";
+		}
+	}
+
 	countFrames();
 
 	glutSwapBuffers();
@@ -251,7 +258,7 @@ void renderBitmapString(float x, float y, float z, void *font, char *string) {
 	}
 }
 
-void drawBlock(Vector3D basePoint, Vector3D size) {
+void drawBlock(Vector3D& basePoint, Vector3D& size) {
 	glBegin(GL_QUADS);
 	//top
 	glColor3f(0.0f, 0.0f, 1.0f);
@@ -304,6 +311,23 @@ void drawBlock(Vector3D basePoint, Vector3D size) {
 	glEnd();
 }
 
+void drawCylinder(Vector3D & basePoint, Vector3D & size){
+	glPushMatrix();
+	GLUquadricObj *quadratic;
+	quadratic = gluNewQuadric();
+	glTranslatef(basePoint.getX()+ size.getX() / 2,basePoint.getY(),basePoint.getZ()+ size.getX() / 2);
+	glRotatef(-90.0f, 1.0f, 0.0f, 0.0f);
+	gluCylinder(quadratic, size.getX()/2, size.getX()/2, size.getY(), 32, 2);
+	
+	glTranslatef(0.0f, 0.0f,  size.getY()); 
+	gluDisk(quadratic, 0.0f, size.getX() / 2, 30, 1);//top 
+
+	glTranslatef(0.0f, 0.0f, -size.getY());
+	glRotatef(180.0f, 1.0f, 0.0f, 0.0f);
+	gluDisk(quadratic, 0.0f, size.getX() / 2, 30, 1); //bottom
+	glPopMatrix();
+}
+
 void drawPlain(float x, float z, float sizeX, float sizeZ) {
 	glBegin(GL_QUADS);
 	glColor3f(1.0f, 1.0f, 1.0f);
@@ -315,16 +339,11 @@ void drawPlain(float x, float z, float sizeX, float sizeZ) {
 	glEnd();
 }
 
-void start(int argc, char **argv) {
-
-	printf("simpleGLUT\n\tGordon Wetzstein [gordon.wetzstein@medien.uni-weimar.de]\n\n");
+void drawShapes(std::vector<Shape> shapes, int argc, char **argv) {
+	shapesToBeDrawn = &shapes;
 	printf("keys:\n\tf\t- toggle fullscreen\n\tesc\t- exit\n\tk\t- camera position and rotation\n\n");
 	printf("mouse:\n\tleft button\t- rotation\n\tmiddle button\t- panning\n\tright button\t- zoom in and out\n");
 
 	initGlut(argc, argv);
 	glutMainLoop();
-
 }
-
-
-

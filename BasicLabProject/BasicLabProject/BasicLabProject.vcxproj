@@ -125,6 +125,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="Parser.cpp" />
     <ClCompile Include="Shape.cpp" />
     <ClCompile Include="Vector3D.cpp" />
     <ClCompile Include="Visualiser.cpp" />
@@ -133,8 +134,12 @@
     <ClInclude Include="Parser.h" />
     <ClInclude Include="Shape.h" />
     <ClInclude Include="ShapeTree.h" />
+    <ClInclude Include="Type.h" />
     <ClInclude Include="Vector3D.h" />
     <ClInclude Include="Visualizer.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="rules.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
