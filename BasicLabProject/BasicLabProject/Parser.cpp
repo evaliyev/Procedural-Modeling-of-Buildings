@@ -60,7 +60,6 @@ std::function<std::vector<Shape>(Shape)> Parser::stringToRule(std::string string
 			(*processing).push(x);
 	};
 
-
 	for (int i = 2; i < tokens.size(); i++) { // i=2 skipping sourceScope and '-'
 		
 		if (!tokens[i].find("T")) { //Scope translation
@@ -95,15 +94,18 @@ std::function<std::vector<Shape>(Shape)> Parser::stringToRule(std::string string
 				(*processing).pop();
 			};
 		}
+
 		else if (!tokens[i].find("I")) { // Instantiate a figure to draw
 			auto type = splitString(tokens[i], '(', ')')[1];
 			rule = [=](Shape x) {
 				rule(x);
 				Shape& currentShape = (*processing).top();
+				currentShape.setName(type);
 				currentShape.setType(stringToType(type));
 				(*result).push_back(currentShape);
 			};
 		}
+
 		else if (!tokens[i].find("Repeat")) { 
 			auto arguments = splitString(splitString(tokens[i], '(', ')')[1], ',', ',');
 			auto parameters = splitString(splitString(tokens[i], '{', '}')[1], ',', ',');
@@ -114,6 +116,7 @@ std::function<std::vector<Shape>(Shape)> Parser::stringToRule(std::string string
 				std::copy(newShapes.begin(), newShapes.end(), std::back_inserter((*result)));
 			};
 		}
+
 		else if (!tokens[i].find("Subdiv")) {
 			auto arguments = splitString(splitString(tokens[i], '(', ')')[1], ',', ',');
 			auto parameters = splitString(splitString(tokens[i], '{', '}')[1], ',', ',');
@@ -129,11 +132,11 @@ std::function<std::vector<Shape>(Shape)> Parser::stringToRule(std::string string
 		}
 	}
 	return [=](Shape shape) {
+		(*result).clear();
 		if(sourceScope.compare(shape.getName())==0)
 			rule(shape);
 		return (*result);};
 }
-
 
 std::vector<std::function<std::vector<Shape>(Shape)>> Parser::parseRules() {
 	std::vector<std::function<std::vector<Shape>(Shape)>> rules;

@@ -44,6 +44,7 @@ public:
     Vector3D& getSize();
 
     std::string getName();
+	void setName(std::string name);
 
     /* Adds an instance of a geometric primitive with identifier objId */
     Shape getInstance(std::string objId);

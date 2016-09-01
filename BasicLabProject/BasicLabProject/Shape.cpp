@@ -2,9 +2,9 @@
 #include "Vector3D.h"
 #include <string>
 #include "math.h"
-#include <iostream>
 
-const float PI = 3.14;
+
+const float PI = 3.14159265358979323846;
 
 Shape::Shape(std::string name, Vector3D &scopePosition, Vector3D &size, Type type) {
     this->name = name;
@@ -107,6 +107,10 @@ Shape &Shape::pop(std::stack<Shape> shapes) {
 }
 
 std::string Shape::getName() { return this->name; }
+
+void Shape::setName(std::string name){
+	this->name = name;
+}
 
 std::vector<Shape> Shape::repeat(int axis, int times, std::string newShapesNames) {
     std::vector<Shape> successors;

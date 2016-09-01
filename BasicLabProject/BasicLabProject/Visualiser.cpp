@@ -1,6 +1,9 @@
 #include "Visualizer.h"
+const int SCREEN_WIDTH = 640;
+const int SCREEN_HEIGHT = 400;
 
 std::vector<Shape> *shapesToBeDrawn;
+ShapeTree *shapeTree;
 bool bUsePredefinedCamera = true;
 bool bFullsreen = false;
 int nWindowID;
@@ -27,7 +30,7 @@ int leftMouseButtonActive = 0, middleMouseButtonActive = 0, rightMouseButtonActi
 // modifier state
 int shiftActive = 0, altActive = 0, ctrlActive = 0;
 
-void displayFunc(void) {
+void displayFunc2(void) {
 	// clear the buffers
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glEnable(GL_DEPTH_TEST);
@@ -39,7 +42,7 @@ void displayFunc(void) {
 	glLoadIdentity();
 	glEnable(GL_LIGHTING);
 	glEnable(GL_LIGHT0);
-	// glEnable(GL_COLOR_MATERIAL); uncomment to enable colors
+	//glEnable(GL_COLOR_MATERIAL); //uncomment to enable colors
 
 	GLfloat lightpos[4] = { 5.0, 15.0, 10.0, 1.0 };
 	glLightfv(GL_LIGHT0, GL_POSITION, lightpos);
@@ -71,22 +74,81 @@ void displayFunc(void) {
 	glutSwapBuffers();
 }
 
-void initGlut(int argc, char **argv) {
+void displayFunc(void) {
+	glClearColor(0.0f, 0.0f, 0.0f, 1.0f); // Set background color to black and opaque
+	glClear(GL_COLOR_BUFFER_BIT);         // Clear the color buffer (background)
+	float padding = 0.1f;
+	
+
+	Node *root = (*shapeTree).getRoot();
+	float areaHeight = 2.0 / 5;
+	float blockHeight = areaHeight - 2 * padding;
+
+	std::deque<Node *> shapeQueue;
+	shapeQueue.push_back(root);
+
+	
+	int depth = 0;
+	while (!shapeQueue.empty()) {
+		
+		float areaWidth =  2.0 / shapeQueue.size();
+		float blockWidth = std::fmin(0.4,areaWidth - 2 * padding);
+		int queueSize = shapeQueue.size();
+
+		for (int j = 0; j < queueSize; j++) {
+			Node *current = shapeQueue.front();
+			glColor3f(1.0f, 1.0f, 0.0f); // Yellow
+			draw2DBlock(-1+ areaWidth / 2.0 + areaWidth*j, 1-( areaHeight / 2.0 + areaHeight*(depth)), blockWidth, blockHeight);
+			glColor3f(1.0f, 0.0f, 0.0f); // Red
+			renderBitmapString(-1 + areaWidth / 2.0 + areaWidth*j, 1 - (areaHeight / 2.0 + areaHeight*(depth)), 0.0, GLUT_BITMAP_HELVETICA_10, current->getShape().getName().c_str());
+			auto children = (*current).getChildren();
+			for (unsigned k = 0; k < children.size(); k++) 
+				shapeQueue.push_back(children[k]);
+			shapeQueue.pop_front();
+		}
+		depth++;
+	}
+
+ 
+
+	
+
+	//glColor3f(0.0f, 1.0f, 0.0f); // Green
+
+	//glColor3f(0.2f, 0.2f, 0.2f); // Dark Gray
+	 
+
+
+	 
+	//glColor3f(0.0f, 0.0f, 1.0f); // Blue
+
+	//glColor3f(1.0f, 0.0f, 0.0f); // Red
+ 
+	
+ 
+	glFlush();  // Render now
+}
+
+void initGlut(int whatToDraw, int argc, char **argv) {
 
 	// GLUT Window Initialization:
 	glutInit(&argc, argv);
-	glutInitWindowSize(640, 480);
+	glutInitWindowSize(SCREEN_WIDTH, SCREEN_HEIGHT);
 	glutInitWindowPosition(100, 100);
-	glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH);
+	//glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH);
 	nWindowID = glutCreateWindow("Procedural Modeling");
-
 	// Register callbacks:
-	glutDisplayFunc(displayFunc);
-	glutReshapeFunc(reshapeFunc);
-	glutKeyboardFunc(keyboardFunc);
-	glutMouseFunc(mouseCallbackFunc);
-	glutMotionFunc(mouseMotionFunc);
-	glutIdleFunc(idleFunc);
+
+	if (whatToDraw ==0) // draw 2d tree
+		glutDisplayFunc(displayFunc);
+	else { //draw 3d
+		glutDisplayFunc(displayFunc2);
+		glutReshapeFunc(reshapeFunc);
+		glutKeyboardFunc(keyboardFunc);
+		glutMouseFunc(mouseCallbackFunc);
+		glutMotionFunc(mouseMotionFunc);
+		glutIdleFunc(idleFunc);
+	}
 }
 
 void idleFunc(void) {
@@ -250,8 +312,8 @@ void countFrames(void) {
 	glMatrixMode(GL_MODELVIEW);
 }
 
-void renderBitmapString(float x, float y, float z, void *font, char *string) {
-	char *c;
+void renderBitmapString(float x, float y, float z, void *font, const char *string) {
+	const char *c;
 	glRasterPos3f(x, y, z);
 	for (c = string; *c != '\0'; c++) {
 		glutBitmapCharacter(font, *c);
@@ -313,6 +375,7 @@ void drawBlock(Vector3D& basePoint, Vector3D& size) {
 
 void drawCylinder(Vector3D & basePoint, Vector3D & size){
 	glPushMatrix();
+
 	GLUquadricObj *quadratic;
 	quadratic = gluNewQuadric();
 	glTranslatef(basePoint.getX()+ size.getX() / 2,basePoint.getY(),basePoint.getZ()+ size.getX() / 2);
@@ -325,6 +388,7 @@ void drawCylinder(Vector3D & basePoint, Vector3D & size){
 	glTranslatef(0.0f, 0.0f, -size.getY());
 	glRotatef(180.0f, 1.0f, 0.0f, 0.0f);
 	gluDisk(quadratic, 0.0f, size.getX() / 2, 30, 1); //bottom
+	
 	glPopMatrix();
 }
 
@@ -339,11 +403,96 @@ void drawPlain(float x, float z, float sizeX, float sizeZ) {
 	glEnd();
 }
 
+void draw2DBlock(float centerX, float centerY, float width, float height) {
+	// Define shapes enclosed within a pair of glBegin and glEnd
+	glBegin(GL_QUADS);               
+	glVertex2f(centerX - width/2, centerY - height/2);         // Define vertices in counter-clockwise (CCW) order
+	glVertex2f(centerX + width / 2, centerY - height / 2);     //  so that the normal (front-face) is facing you
+	glVertex2f(centerX + width / 2, centerY + height / 2);
+	glVertex2f(centerX - width / 2, centerY + height / 2);
+	glEnd();
+}
+
+void drawLine(float startX, float startY, float endX, float endY) {
+	glLineWidth(2.5);
+	//glColor3f(1.0, 0.0, 0.0);
+	glBegin(GL_LINES);
+	glVertex2f(startX, startY);
+	glVertex2f(endX, endY);
+	glEnd();
+}
+
 void drawShapes(std::vector<Shape> shapes, int argc, char **argv) {
 	shapesToBeDrawn = &shapes;
 	printf("keys:\n\tf\t- toggle fullscreen\n\tesc\t- exit\n\tk\t- camera position and rotation\n\n");
 	printf("mouse:\n\tleft button\t- rotation\n\tmiddle button\t- panning\n\tright button\t- zoom in and out\n");
 
-	initGlut(argc, argv);
+	initGlut(1, argc, argv);
 	glutMainLoop();
+}
+
+void drawDerivationTree(ShapeTree tree, int argc, char **argv) {
+	shapeTree = &tree;
+	initGlut(0, argc, argv);
+	glutMainLoop();
+}
+
+unsigned char * loadBMPRaw(const char * imagepath, unsigned int& outWidth, unsigned int& outHeight, bool flipY) {
+	//printf("Reading image %s\n", imagepath);
+	outWidth = -1;
+	outHeight = -1;
+	// Data read from the header of the BMP file
+	unsigned char header[54];
+	unsigned int dataPos;
+	unsigned int imageSize;
+	// Actual RGB data
+	unsigned char * data;
+	// Open the file
+	FILE * file; errno_t err;
+
+	if ((err = fopen_s(&file, imagepath, "r")) != 0) {
+		std::cout << "Couldn't load image" <<err;
+	}
+	// Read the header, i.e. the 54 first bytes
+	// If less than 54 byes are read, problem
+	if (fread(header, 1, 54, file) != 54) {
+		printf("Not a correct BMP file\n");
+		return NULL;
+	}
+	// A BMP files always begins with "BM"
+	if (header[0] != 'B' || header[1] != 'M') {
+		printf("Not a correct BMP file\n");
+		return NULL;
+	}
+	// Make sure this is a 24bpp file
+	if (*(int*)&(header[0x1E]) != 0) { printf("Not a correct BMP file\n");    return NULL; }
+	if (*(int*)&(header[0x1C]) != 24) { printf("Not a correct BMP file\n");    return NULL; }
+	// Read the information about the image
+	dataPos = *(int*)&(header[0x0A]);
+	imageSize = *(int*)&(header[0x22]);
+	outWidth = *(int*)&(header[0x12]);
+	outHeight = *(int*)&(header[0x16]);
+	// Some BMP files are misformatted, guess missing information
+	if (imageSize == 0)    imageSize = outWidth*outHeight * 3; // 3 : one byte for each Red, Green and Blue component
+	if (dataPos == 0)      dataPos = 54; // The BMP header is done that way
+	data = new unsigned char[imageSize]; // Create a buffer
+	// Read the actual data from the file into the buffer
+	fread(data, 1, imageSize, file);
+	// Everything is in memory now, the file wan be closed
+	fclose(file);
+	if (flipY) {
+		// swap y-axis
+		unsigned char * tmpBuffer = new unsigned char[outWidth * 3];
+		int size = outWidth * 3;
+		for (int i = 0; i<outHeight / 2; i++) {
+			// copy row i to tmp
+			memcpy_s(tmpBuffer, size, data + outWidth * 3 * i, size);
+			// copy row h-i-1 to i
+			memcpy_s(data + outWidth * 3 * i, size, data + outWidth * 3 * (outHeight - i - 1), size);
+			// copy tmp to row h-i-1
+			memcpy_s(data + outWidth * 3 * (outHeight - i - 1), size, tmpBuffer, size);
+		}
+		delete[] tmpBuffer;
+	}
+	return data;
 }

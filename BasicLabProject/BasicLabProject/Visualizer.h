@@ -1,14 +1,21 @@
 #pragma once
 #include <GL\glut.h>
+
+#include <stdio.h>
+#include <errno.h>
+#include <string.h>
+#include <locale.h>
+
 #include "Visualizer.h"
 #include "Vector3D.h"
 #include "Shape.h"
+#include "ShapeTree.h"
 #ifdef WIN32
 #include <windows.h>
 #endif
 
 // GLUT callbacks and functions
-void initGlut(int argc, char **argv);
+void initGlut(int whatToDraw, int argc, char **argv);
 void displayFunc(void);
 void idleFunc(void);
 void reshapeFunc(int width, int height);
@@ -18,10 +25,18 @@ void keyboardFunc(unsigned char key, int x, int y);
 
 // other [OpenGL] functions
 void countFrames(void);
-void renderBitmapString(float x, float y, float z, void *font, char *string);
-GLuint loadTexture(const char * filename);
+void renderBitmapString(float x, float y, float z, void *font, const char *string);
+unsigned char * loadBMPRaw(const char * imagepath, unsigned int& outWidth, unsigned int& outHeight, bool flipY);
 
-void drawShapes(std::vector<Shape> shapes, int argc, char **argv);
+//Drawing 3d objects
 void drawBlock(Vector3D& basePoint, Vector3D& size);//draw cuboid
 void drawCylinder(Vector3D& basePoint, Vector3D& size);
 void drawPlain(float x, float z, float sizeX, float sizeZ);
+
+//Drawing 2D objects
+void draw2DBlock(float centerX, float centerY, float width, float height);
+void drawLine(float startX, float startY, float endX, float endY);
+
+
+void drawShapes(std::vector<Shape> shapes, int argc, char **argv); // draws 3d model of building
+void drawDerivationTree(ShapeTree tree, int argc, char **argv); // draw 2d tree
