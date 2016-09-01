@@ -33,7 +33,7 @@ Vector3D Shape::rotate_around_axis(Vector3D &position, float degrees, int axis) 
     float posX = position.getX();
     float posY = position.getY();
     float posZ = position.getZ();
-    float x, y, z;
+    float x, y, z; 
     switch (axis) {
         case 0: {
             x = cos_angle * posX - sin_angle * posY;

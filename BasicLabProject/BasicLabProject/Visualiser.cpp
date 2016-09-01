@@ -89,21 +89,45 @@ void displayFunc(void) {
 
 	
 	int depth = 0;
+	float blockX = 0, blockY = 0;
 	while (!shapeQueue.empty()) {
-		
-		float areaWidth =  2.0 / shapeQueue.size();
-		float blockWidth = std::fmin(0.4,areaWidth - 2 * padding);
+
 		int queueSize = shapeQueue.size();
+		float areaWidth =  2.0 / queueSize;
+		float blockWidth = std::fmin(0.4,areaWidth - 2 * padding);
 
 		for (int j = 0; j < queueSize; j++) {
-			Node *current = shapeQueue.front();
+			Node *current = shapeQueue[j]; 
 			glColor3f(1.0f, 1.0f, 0.0f); // Yellow
-			draw2DBlock(-1+ areaWidth / 2.0 + areaWidth*j, 1-( areaHeight / 2.0 + areaHeight*(depth)), blockWidth, blockHeight);
+
+			//drawing shape
+		    blockX = -1 + areaWidth / 2.0 + areaWidth*j;
+			blockY = 1 - (areaHeight / 2.0 + areaHeight*(depth));
+			draw2DBlock(blockX,blockY, blockWidth, blockHeight); 
+
+			//drawing shapename
 			glColor3f(1.0f, 0.0f, 0.0f); // Red
-			renderBitmapString(-1 + areaWidth / 2.0 + areaWidth*j, 1 - (areaHeight / 2.0 + areaHeight*(depth)), 0.0, GLUT_BITMAP_HELVETICA_10, current->getShape().getName().c_str());
+			renderBitmapString(blockX, blockY, 0.0, GLUT_BITMAP_HELVETICA_10, current->getShape().getName().c_str());
+			
+			//Adding its children to the list
 			auto children = (*current).getChildren();
 			for (unsigned k = 0; k < children.size(); k++) 
 				shapeQueue.push_back(children[k]);
+			
+			}
+ 
+		int childrenNumber = shapeQueue.size() - queueSize;
+		float childAreaWidth = 2.0 / childrenNumber;
+
+		for (int k = 0; k < queueSize; k++) { //drawing lines from block to its children
+			Node *current = shapeQueue.front();
+			blockX = -1 + areaWidth / 2.0 + areaWidth*k;		
+
+			for (int n = 0; n < current->getChildren().size(); n++) {
+				float childX = -1 + childAreaWidth / 2.0 + childAreaWidth*n;
+				float childY = 1 - (areaHeight / 2.0 + areaHeight*(depth + 1));
+				drawLine(blockX, blockY-blockHeight/2, childX, childY);
+			}
 			shapeQueue.pop_front();
 		}
 		depth++;
@@ -111,21 +135,6 @@ void displayFunc(void) {
 
  
 
-	
-
-	//glColor3f(0.0f, 1.0f, 0.0f); // Green
-
-	//glColor3f(0.2f, 0.2f, 0.2f); // Dark Gray
-	 
-
-
-	 
-	//glColor3f(0.0f, 0.0f, 1.0f); // Blue
-
-	//glColor3f(1.0f, 0.0f, 0.0f); // Red
- 
-	
- 
 	glFlush();  // Render now
 }
 
