@@ -10,14 +10,14 @@ using namespace std;
 int main(int argc, char** argv) {
 	 
 	Parser parser("rules.txt");
-	auto rules = parser.parseRules();
-	auto shapes = rules[0](Shape("A", Vector3D(0, 0, 0), Vector3D(0, 0, 0),SCOPE));
+	 auto rules = parser.parseRules();
+	//auto shapes = rules[0](Shape("main", Vector3D(20, 0, 20), Vector3D(10, 60, 10),SCOPE));
 	
 	ShapeTree tree;
-	tree.buildTree(rules, Shape("A", Vector3D(0, 0, 0), Vector3D(0, 0, 0), SCOPE));
+	tree.buildTree(rules, Shape("main", Vector3D(20, 0, 20), Vector3D(10, 60, 10), SCOPE));
 	auto nodes = tree.getLeafNodes();
-	//drawShapes(shapes,argc,argv);
-	drawDerivationTree(tree, argc, argv);
+	 drawShapes(nodes,argc,argv);
+	//drawDerivationTree(tree, argc, argv);
 	//_getch();
 	return 0;
 }

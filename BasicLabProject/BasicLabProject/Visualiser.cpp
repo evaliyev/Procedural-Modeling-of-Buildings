@@ -124,7 +124,7 @@ void displayFunc(void) {
 			blockX = -1 + areaWidth / 2.0 + areaWidth*k;		
 
 			for (int n = 0; n < current->getChildren().size(); n++) {
-				float childX = -1 + childAreaWidth / 2.0 + childAreaWidth*n;
+				float childX = -1 + childAreaWidth / 2.0 + childAreaWidth*(n+k);
 				float childY = 1 - (areaHeight / 2.0 + areaHeight*(depth + 1));
 				drawLine(blockX, blockY-blockHeight/2, childX, childY);
 			}

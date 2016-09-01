@@ -71,6 +71,21 @@ std::function<std::vector<Shape>(Shape)> Parser::stringToRule(std::string string
 			};
 		}
 
+		else if (!tokens[i].find("Subdiv")) {
+			std::cout << tokens[i];
+			auto arguments = splitString(splitString(tokens[i], '(', ')')[1], ',', ',');
+			auto parameters = splitString(splitString(tokens[i], '{', '}')[1], ',', ',');
+			rule = [=](Shape x) {
+				rule(x);
+				Shape& currentShape = (*processing).top();
+				int axis = std::stoi(arguments[0]);
+				std::vector<float> ratios;
+				for (int i = 1; i < arguments.size(); ratios.push_back(std::stof(arguments[i++]))); //parsion ratios
+				auto newShapes = currentShape.split(axis, ratios, parameters);
+				std::copy(newShapes.begin(), newShapes.end(), std::back_inserter((*result))); //save new shape to result
+			};
+		}
+
 		else if (!tokens[i].find("S")) { // Set new scope size
 			auto arguments = splitString(splitString(tokens[i], '(', ')')[1], ',', ',');
 			rule = [=](Shape x) {
@@ -109,25 +124,11 @@ std::function<std::vector<Shape>(Shape)> Parser::stringToRule(std::string string
 		else if (!tokens[i].find("Repeat")) { 
 			auto arguments = splitString(splitString(tokens[i], '(', ')')[1], ',', ',');
 			auto parameters = splitString(splitString(tokens[i], '{', '}')[1], ',', ',');
-			rule = [=,&result](Shape x) {
+			rule = [=](Shape x) {
 				rule(x);
 				Shape& currentShape = (*processing).top();
 				auto newShapes = currentShape.repeat(std::stoi(arguments[0]), std::stoi(arguments[1]), parameters[0]);
 				std::copy(newShapes.begin(), newShapes.end(), std::back_inserter((*result)));
-			};
-		}
-
-		else if (!tokens[i].find("Subdiv")) {
-			auto arguments = splitString(splitString(tokens[i], '(', ')')[1], ',', ',');
-			auto parameters = splitString(splitString(tokens[i], '{', '}')[1], ',', ',');
-			rule = [=,&arguments, &result](Shape x) {
-				rule(x);
-				Shape& currentShape = (*processing).top();
-				int axis =std::stoi(arguments[0]);
-				std::vector<float> ratios;
-				std::transform(arguments.begin() + 1, arguments.end(), ratios.begin(), [](std::string x) { return  std::stof(x); });
-				auto newShapes = currentShape.split(axis,ratios,parameters);
-				std::copy(newShapes.begin(), newShapes.end(), std::back_inserter((*result))); //save new shape to result
 			};
 		}
 	}
