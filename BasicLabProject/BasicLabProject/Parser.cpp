@@ -72,7 +72,6 @@ std::function<std::vector<Shape>(Shape)> Parser::stringToRule(std::string string
 		}
 
 		else if (!tokens[i].find("Subdiv")) {
-			std::cout << tokens[i];
 			auto arguments = splitString(splitString(tokens[i], '(', ')')[1], ',', ',');
 			auto parameters = splitString(splitString(tokens[i], '{', '}')[1], ',', ',');
 			rule = [=](Shape x) {

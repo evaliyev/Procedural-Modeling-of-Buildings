@@ -94,7 +94,7 @@ void displayFunc(void) {
 
 		int queueSize = shapeQueue.size();
 		float areaWidth =  2.0 / queueSize;
-		float blockWidth = std::fmin(0.4,areaWidth - 2 * padding);
+		float blockWidth = std::fmin(0.4,areaWidth -  padding);
 
 		for (int j = 0; j < queueSize; j++) {
 			Node *current = shapeQueue[j]; 
@@ -116,18 +116,22 @@ void displayFunc(void) {
 			
 			}
  
+
 		int childrenNumber = shapeQueue.size() - queueSize;
 		float childAreaWidth = 2.0 / childrenNumber;
-
+		int prevChildren=0 ,currentChildren;
 		for (int k = 0; k < queueSize; k++) { //drawing lines from block to its children
 			Node *current = shapeQueue.front();
 			blockX = -1 + areaWidth / 2.0 + areaWidth*k;		
-
-			for (int n = 0; n < current->getChildren().size(); n++) {
-				float childX = -1 + childAreaWidth / 2.0 + childAreaWidth*(n+k);
+			
+			currentChildren = current->getChildren().size();
+			
+			for (int n = 0; n < currentChildren; n++) {
+				float childX = -1 + childAreaWidth / 2.0 + childAreaWidth*(n+ prevChildren);
 				float childY = 1 - (areaHeight / 2.0 + areaHeight*(depth + 1));
 				drawLine(blockX, blockY-blockHeight/2, childX, childY);
 			}
+			prevChildren += currentChildren;
 			shapeQueue.pop_front();
 		}
 		depth++;
