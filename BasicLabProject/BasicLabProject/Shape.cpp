@@ -121,7 +121,7 @@ std::vector<Shape> Shape::repeat(int axis, int times, std::string newShapesNames
     float positionChange = this->scopePosition.getElement(axis);
 
     for(int i=0; i<times; i++){
-        positionChange += i*ratio;
+        positionChange = i*ratio;
         newPosition.setElement(axis,positionChange);
         newSize.setElement(axis,ratio);
         Shape newShape(newShapesNames,newPosition,newSize, this->type);
