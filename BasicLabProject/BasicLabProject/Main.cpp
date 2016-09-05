@@ -1,5 +1,4 @@
 #include<iostream>
-//#include<conio.h>
 #include"Parser.h"
 #include "Shape.h"
 #include "Visualizer.h"
@@ -9,15 +8,26 @@ using namespace std;
 
 int main(int argc, char** argv) {
 	 
-	Parser parser("rules.txt");
-	 auto rules = parser.parseRules();
-	//auto shapes = rules[0](Shape("main", Vector3D(20, 0, 20), Vector3D(10, 60, 10),SCOPE));
 	
+	 //auto shapes = rules[0](Shape("X", Vector3D(20, 0, 20), Vector3D(0, 0, 0),SCOPE));
+	 //drawShapes(shapes, argc, argv);
+
+	 //Shape testShape("main", Vector3D(20, 0, 20), Vector3D(10, 10, 60), SCOPE);
+	 //vector<float> ratios = { 0.25,0.25,0.25,0.25 };
+	 //vector<string> shapes = { "A","B","C","D" };
+	 //auto result = testShape.split(2, ratios, shapes);
+	// for (auto x : result)
+	//	 std::cout << x << endl;
+
+ 
+
+	Parser parser("rules.txt");
+	auto rules = parser.parseRules();
 	ShapeTree tree;
-	tree.buildTree(rules, Shape("main", Vector3D(20, 0, 20), Vector3D(10, 60, 10), SCOPE));
+	tree.buildTree(rules, Shape("X", Vector3D(20, 0, 20), Vector3D(10, 60, 10), SCOPE));
 	auto nodes = tree.getLeafNodes();
-	 drawShapes(nodes,argc,argv);
+
+	drawShapes(nodes, argc, argv);
 	//drawDerivationTree(tree, argc, argv);
-	//_getch();
 	return 0;
 }

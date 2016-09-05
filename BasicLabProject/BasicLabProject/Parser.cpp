@@ -1,11 +1,9 @@
-
 #include <iterator>
 #include <algorithm> 
 #include <stack>
 #include <string>
 #include <fstream>
 #include "Parser.h"
- 
 
 void print(std::vector<Shape> vector){
 	std::cout << "Vector ( ";
@@ -18,9 +16,9 @@ Parser::Parser(std::string rulesFile) {
 	this->fileName = rulesFile;
 }
 
-std::vector<std::string> Parser::readLines() {
+std::vector<std::string> Parser::readLines(std::string rulesFile) {
 	std::vector<std::string> linesFromFile;
-	std::ifstream dict_file("rules.txt");
+	std::ifstream dict_file(rulesFile);
 	std::string line;
 	while (std::getline(dict_file, line))
 		linesFromFile.push_back(line);
@@ -98,7 +96,7 @@ std::function<std::vector<Shape>(Shape)> Parser::stringToRule(std::string string
 			rule = [=](Shape x) {
 				rule(x);
 				(*processing).push(x);
-				(*processing).push(Shape(x.getName(), Vector3D(0, 0, 0), Vector3D(0, 0, 0), x.getType()));
+				(*processing).push(Shape(x.getName(),x.getScopePosition(), x.getSize(), x.getType()));
 			};
 		}
 
@@ -140,7 +138,7 @@ std::function<std::vector<Shape>(Shape)> Parser::stringToRule(std::string string
 
 std::vector<std::function<std::vector<Shape>(Shape)>> Parser::parseRules() {
 	std::vector<std::function<std::vector<Shape>(Shape)>> rules;
-	auto lines = readLines();
+	auto lines = readLines(this->fileName);
 	for each (auto line in lines)
 		rules.push_back(stringToRule(line));
 	return rules;

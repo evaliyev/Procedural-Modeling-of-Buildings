@@ -1,0 +1,6 @@
+main => Subdiv(1,15,15,15,15){A,B,C,D}
+A => Subdiv(1,5,5,5){C,B,C,}
+B => S(8,20,8) T(1,0,1) I(cube)
+C => Subdiv(1,2,2,1){Q,D,Q,}
+Q => S(6,10,6) T(2,0,2) I(cube)
+D => S(2,25,2) T(4,0,4) I(cylinder)

@@ -1,6 +1,4 @@
 #include "Vector3D.h"
-#include <stdexcept>
-
 
 Vector3D::Vector3D(float x, float y, float z) {
     this->x = x;
@@ -41,13 +39,11 @@ void Vector3D::setElement(int axis, float value) {
     }
 }
 
-
 void Vector3D::add(Vector3D& that) {
     this->x += that.x;
     this->y += that.y;
     this->z += that.z;
 }
-
 
 float Vector3D::getX() { return this->x; }
 
@@ -60,8 +56,6 @@ void Vector3D::set(Vector3D &vector) {
     this->y = vector.getY();
     this->z = vector.getZ();
 }
-
-
 
 std::ostream &operator<<(std::ostream &strm, const Vector3D &vector) {
     return strm << "V(" << vector.x << "," << vector.y << "," << vector.z << ")";

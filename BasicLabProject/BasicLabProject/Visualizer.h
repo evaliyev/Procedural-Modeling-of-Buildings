@@ -1,18 +1,11 @@
 #pragma once
 #include <GL\glut.h>
-
-#include <stdio.h>
-#include <errno.h>
-#include <string.h>
-#include <locale.h>
-
-#include "Visualizer.h"
+#include "Textures.h"
 #include "Vector3D.h"
 #include "Shape.h"
 #include "ShapeTree.h"
-#ifdef WIN32
-#include <windows.h>
-#endif
+
+
 
 // GLUT callbacks and functions
 void initGlut(int whatToDraw, int argc, char **argv);
@@ -26,7 +19,6 @@ void keyboardFunc(unsigned char key, int x, int y);
 // other [OpenGL] functions
 void countFrames(void);
 void renderBitmapString(float x, float y, float z, void *font, const char *string);
-unsigned char * loadBMPRaw(const char * imagepath, unsigned int& outWidth, unsigned int& outHeight, bool flipY);
 
 //Drawing 3d objects
 void drawBlock(Vector3D& basePoint, Vector3D& size);//draw cuboid

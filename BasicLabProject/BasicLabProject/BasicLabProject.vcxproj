@@ -127,6 +127,8 @@
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Parser.cpp" />
     <ClCompile Include="Shape.cpp" />
+    <ClCompile Include="ShapeTree.cpp" />
+    <ClCompile Include="Textures.cpp" />
     <ClCompile Include="Vector3D.cpp" />
     <ClCompile Include="Visualiser.cpp" />
   </ItemGroup>
@@ -134,12 +136,18 @@
     <ClInclude Include="Parser.h" />
     <ClInclude Include="Shape.h" />
     <ClInclude Include="ShapeTree.h" />
+    <ClInclude Include="Textures.h" />
     <ClInclude Include="Type.h" />
     <ClInclude Include="Vector3D.h" />
     <ClInclude Include="Visualizer.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="rules.txt" />
+    <Text Include="rules2.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="bricks.bmp" />
+    <Image Include="grass.bmp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

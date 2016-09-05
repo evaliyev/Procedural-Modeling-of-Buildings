@@ -1,9 +1,12 @@
 #include "Visualizer.h"
+ 
 const int SCREEN_WIDTH = 640;
 const int SCREEN_HEIGHT = 400;
-
+ 
+Textures * textureLoader;
 std::vector<Shape> *shapesToBeDrawn;
 ShapeTree *shapeTree;
+
 bool bUsePredefinedCamera = true;
 bool bFullsreen = false;
 int nWindowID;
@@ -54,8 +57,13 @@ void displayFunc2(void) {
 	glRotatef(navigationRotation[1], 0.0f, 1.0f, 0.0f);
 	
 	std::vector<Shape> &shapes = (*shapesToBeDrawn);
+
+	(*textureLoader).activateTexture("grass");
 	drawPlain(0.0, 0.0, 100.0, 100.0);
-	for (int i = 0; i < shapes.size(); i++){
+
+	(*textureLoader).activateTexture("bricks");
+
+	 for (int i = 0; i < shapes.size(); i++){
 		Shape& currentShape = shapes[i];
 		switch (currentShape.getType()){
 		case CUBE: 
@@ -65,12 +73,10 @@ void displayFunc2(void) {
 			drawCylinder(currentShape.getScopePosition(), currentShape.getSize());
 			break;
 		default:
-			throw "Undrowable type";
+			throw "Undrawable type";
 		}
-	}
-
+	} 
 	countFrames();
-
 	glutSwapBuffers();
 }
 
@@ -79,14 +85,12 @@ void displayFunc(void) {
 	glClear(GL_COLOR_BUFFER_BIT);         // Clear the color buffer (background)
 	float padding = 0.1f;
 	
-
 	Node *root = (*shapeTree).getRoot();
 	float areaHeight = 2.0 / 5;
 	float blockHeight = areaHeight - 2 * padding;
 
 	std::deque<Node *> shapeQueue;
 	shapeQueue.push_back(root);
-
 	
 	int depth = 0;
 	float blockX = 0, blockY = 0;
@@ -113,9 +117,7 @@ void displayFunc(void) {
 			auto children = (*current).getChildren();
 			for (unsigned k = 0; k < children.size(); k++) 
 				shapeQueue.push_back(children[k]);
-			
 			}
- 
 
 		int childrenNumber = shapeQueue.size() - queueSize;
 		float childAreaWidth = 2.0 / childrenNumber;
@@ -129,16 +131,13 @@ void displayFunc(void) {
 			for (int n = 0; n < currentChildren; n++) {
 				float childX = -1 + childAreaWidth / 2.0 + childAreaWidth*(n+ prevChildren);
 				float childY = 1 - (areaHeight / 2.0 + areaHeight*(depth + 1));
-				drawLine(blockX, blockY-blockHeight/2, childX, childY);
+				drawLine(blockX, blockY-blockHeight/2.0, childX, childY + blockHeight / 2.0);
 			}
 			prevChildren += currentChildren;
 			shapeQueue.pop_front();
 		}
 		depth++;
 	}
-
- 
-
 	glFlush();  // Render now
 }
 
@@ -155,12 +154,14 @@ void initGlut(int whatToDraw, int argc, char **argv) {
 	if (whatToDraw ==0) // draw 2d tree
 		glutDisplayFunc(displayFunc);
 	else { //draw 3d
+		textureLoader = new Textures();
 		glutDisplayFunc(displayFunc2);
 		glutReshapeFunc(reshapeFunc);
 		glutKeyboardFunc(keyboardFunc);
 		glutMouseFunc(mouseCallbackFunc);
 		glutMotionFunc(mouseMotionFunc);
 		glutIdleFunc(idleFunc);
+		glEnable(GL_TEXTURE_2D);
 	}
 }
 
@@ -338,70 +339,91 @@ void drawBlock(Vector3D& basePoint, Vector3D& size) {
 	//top
 	glColor3f(0.0f, 0.0f, 1.0f);
 	glNormal3f(0.0F, 1.0F, 0.0F);
+	glTexCoord2f(0, 0);
 	glVertex3f(basePoint.getX(), basePoint.getY() + size.getY(), basePoint.getZ());
+	glTexCoord2f(1, 0);
 	glVertex3f(basePoint.getX() + size.getX(), basePoint.getY() + size.getY(), basePoint.getZ());
+	glTexCoord2f(1, 1);
 	glVertex3f(basePoint.getX() + size.getX(), basePoint.getY() + size.getY(), basePoint.getZ() + size.getZ());
+	glTexCoord2f(0, 1);
 	glVertex3f(basePoint.getX(), basePoint.getY() + size.getY(), basePoint.getZ() + size.getZ());
 
 	//bottom
 	glColor3f(0.0f, 1.0f, 1.0f);
 	glNormal3f(0.0F, -1.0F, 0.0F);
+	glTexCoord2f(0, 0);
 	glVertex3f(basePoint.getX(), basePoint.getY(), basePoint.getZ());
+	glTexCoord2f(1, 0);
 	glVertex3f(basePoint.getX() + size.getX(), basePoint.getY(), basePoint.getZ());
+	glTexCoord2f(1, 1);
 	glVertex3f(basePoint.getX() + size.getX(), basePoint.getY(), basePoint.getZ() + size.getZ());
+	glTexCoord2f(0, 1);
 	glVertex3f(basePoint.getX(), basePoint.getY(), basePoint.getZ() + size.getZ());
 
 	//front
 	glColor3f(1.0f, 0.0f, 0.0f);
 	glNormal3f(0.0F, 0.0F, -1.0F);
+	glTexCoord2f(0, 0);
 	glVertex3f(basePoint.getX(), basePoint.getY(), basePoint.getZ());
+	glTexCoord2f(1, 0);
 	glVertex3f(basePoint.getX() + size.getX(), basePoint.getY(), basePoint.getZ());
+	glTexCoord2f(1, 1);
 	glVertex3f(basePoint.getX() + size.getX(), basePoint.getY() + size.getY(), basePoint.getZ());
+	glTexCoord2f(0, 1);
 	glVertex3f(basePoint.getX(), basePoint.getY() + size.getY(), basePoint.getZ());
 	
 	//back
 	glColor3f(0.0f, 1.0f, 0.0f);
 	glNormal3f(0.0F, 0.0F, 1.0F);
+	glTexCoord2f(0, 0);
 	glVertex3f(basePoint.getX(), basePoint.getY(), basePoint.getZ() + size.getZ());
+	glTexCoord2f(1, 0);
 	glVertex3f(basePoint.getX() + size.getX(), basePoint.getY(), basePoint.getZ() + size.getZ());
+	glTexCoord2f(1, 1);
 	glVertex3f(basePoint.getX() + size.getX(), basePoint.getY() + size.getY(), basePoint.getZ() + size.getZ());
+	glTexCoord2f(0, 1);
 	glVertex3f(basePoint.getX(), basePoint.getY() + size.getY(), basePoint.getZ() + size.getZ());
 	
 	// left
 	glColor3f(0.1f, 0.1f, 0.1f);
 	glNormal3f(-1.0F, 0.0F, 0.0F);
+	glTexCoord2f(1, 0);
 	glVertex3f(basePoint.getX(), basePoint.getY(), basePoint.getZ());
+	glTexCoord2f(0, 0);
 	glVertex3f(basePoint.getX(), basePoint.getY(), basePoint.getZ() + size.getZ());
+	glTexCoord2f(0, 1);
 	glVertex3f(basePoint.getX(), basePoint.getY() + size.getY(), basePoint.getZ() + size.getZ());
+	glTexCoord2f(1, 1);
 	glVertex3f(basePoint.getX(), basePoint.getY() + size.getY(), basePoint.getZ());
 
 	//right
 	glColor3f(1.0f, 1.0f, 0.0f);
 	glNormal3f(1.0F, 0.0F, 0.0F);
+	glTexCoord2f(1, 0);
 	glVertex3f(basePoint.getX() + size.getX(), basePoint.getY(), basePoint.getZ());
+	glTexCoord2f(0, 0);
 	glVertex3f(basePoint.getX() + size.getX(), basePoint.getY(), basePoint.getZ() + size.getZ());
+	glTexCoord2f(0, 1);
 	glVertex3f(basePoint.getX() + size.getX(), basePoint.getY() + size.getY(), basePoint.getZ() + size.getZ());
+	glTexCoord2f(1, 1);
 	glVertex3f(basePoint.getX() + size.getX(), basePoint.getY() + size.getY(), basePoint.getZ());
-
 	glEnd();
 }
 
 void drawCylinder(Vector3D & basePoint, Vector3D & size){
 	glPushMatrix();
-
 	GLUquadricObj *quadratic;
 	quadratic = gluNewQuadric();
+	gluQuadricDrawStyle(quadratic, GLU_FILL);
+	gluQuadricTexture(quadratic, GL_TRUE);
 	glTranslatef(basePoint.getX()+ size.getX() / 2,basePoint.getY(),basePoint.getZ()+ size.getX() / 2);
 	glRotatef(-90.0f, 1.0f, 0.0f, 0.0f);
 	gluCylinder(quadratic, size.getX()/2, size.getX()/2, size.getY(), 32, 2);
-	
 	glTranslatef(0.0f, 0.0f,  size.getY()); 
 	gluDisk(quadratic, 0.0f, size.getX() / 2, 30, 1);//top 
-
 	glTranslatef(0.0f, 0.0f, -size.getY());
 	glRotatef(180.0f, 1.0f, 0.0f, 0.0f);
 	gluDisk(quadratic, 0.0f, size.getX() / 2, 30, 1); //bottom
-	
 	glPopMatrix();
 }
 
@@ -409,10 +431,18 @@ void drawPlain(float x, float z, float sizeX, float sizeZ) {
 	glBegin(GL_QUADS);
 	glColor3f(1.0f, 1.0f, 1.0f);
 	glNormal3f(0.0f, 1.0f, 0.0f);
+	 
+	glTexCoord2f(0, 0);
 	glVertex3f(x, 0.0F, z);
-	glVertex3f(x+sizeX, 0.0F, z);
-	glVertex3f(x + sizeX, 0.0F, z+sizeZ);
+
+	glTexCoord2f(0, 2);
 	glVertex3f(x, 0.0F, z + sizeZ);
+
+	glTexCoord2f(2, 2);
+	glVertex3f(x + sizeX, 0.0F, z+sizeZ);
+
+	glTexCoord2f(2, 0);
+	glVertex3f(x + sizeX, 0.0F, z);
 	glEnd();
 }
 
@@ -448,64 +478,4 @@ void drawDerivationTree(ShapeTree tree, int argc, char **argv) {
 	shapeTree = &tree;
 	initGlut(0, argc, argv);
 	glutMainLoop();
-}
-
-unsigned char * loadBMPRaw(const char * imagepath, unsigned int& outWidth, unsigned int& outHeight, bool flipY) {
-	//printf("Reading image %s\n", imagepath);
-	outWidth = -1;
-	outHeight = -1;
-	// Data read from the header of the BMP file
-	unsigned char header[54];
-	unsigned int dataPos;
-	unsigned int imageSize;
-	// Actual RGB data
-	unsigned char * data;
-	// Open the file
-	FILE * file; errno_t err;
-
-	if ((err = fopen_s(&file, imagepath, "r")) != 0) {
-		std::cout << "Couldn't load image" <<err;
-	}
-	// Read the header, i.e. the 54 first bytes
-	// If less than 54 byes are read, problem
-	if (fread(header, 1, 54, file) != 54) {
-		printf("Not a correct BMP file\n");
-		return NULL;
-	}
-	// A BMP files always begins with "BM"
-	if (header[0] != 'B' || header[1] != 'M') {
-		printf("Not a correct BMP file\n");
-		return NULL;
-	}
-	// Make sure this is a 24bpp file
-	if (*(int*)&(header[0x1E]) != 0) { printf("Not a correct BMP file\n");    return NULL; }
-	if (*(int*)&(header[0x1C]) != 24) { printf("Not a correct BMP file\n");    return NULL; }
-	// Read the information about the image
-	dataPos = *(int*)&(header[0x0A]);
-	imageSize = *(int*)&(header[0x22]);
-	outWidth = *(int*)&(header[0x12]);
-	outHeight = *(int*)&(header[0x16]);
-	// Some BMP files are misformatted, guess missing information
-	if (imageSize == 0)    imageSize = outWidth*outHeight * 3; // 3 : one byte for each Red, Green and Blue component
-	if (dataPos == 0)      dataPos = 54; // The BMP header is done that way
-	data = new unsigned char[imageSize]; // Create a buffer
-	// Read the actual data from the file into the buffer
-	fread(data, 1, imageSize, file);
-	// Everything is in memory now, the file wan be closed
-	fclose(file);
-	if (flipY) {
-		// swap y-axis
-		unsigned char * tmpBuffer = new unsigned char[outWidth * 3];
-		int size = outWidth * 3;
-		for (int i = 0; i<outHeight / 2; i++) {
-			// copy row i to tmp
-			memcpy_s(tmpBuffer, size, data + outWidth * 3 * i, size);
-			// copy row h-i-1 to i
-			memcpy_s(data + outWidth * 3 * i, size, data + outWidth * 3 * (outHeight - i - 1), size);
-			// copy tmp to row h-i-1
-			memcpy_s(data + outWidth * 3 * (outHeight - i - 1), size, tmpBuffer, size);
-		}
-		delete[] tmpBuffer;
-	}
-	return data;
 }
