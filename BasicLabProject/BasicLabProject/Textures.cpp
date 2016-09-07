@@ -4,7 +4,7 @@
  
 Textures::Textures() {
 	for (int i = 0; i < files.size(); i++)
-		this->textures[files[i]] = loadTexture((files[i]+".bmp").c_str(), 1024, 1024);
+		this->textures[files[i]] = loadTexture(("textures/"+files[i]+".bmp").c_str(), 1024, 1024);
 }
 
 GLuint Textures::loadTexture(const char * filename, int width, int height){

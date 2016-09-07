@@ -1,5 +1,5 @@
 #pragma once
-#include <GL\glut.h>
+#include <GL/glut.h>
 #include "Textures.h"
 #include "Vector3D.h"
 #include "Shape.h"

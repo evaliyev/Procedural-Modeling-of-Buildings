@@ -5,12 +5,8 @@
 #include <fstream>
 #include "Parser.h"
 
-void print(std::vector<Shape> vector){
-	std::cout << "Vector ( ";
-	for (unsigned int i = 0; i < vector.size(); i++)
-		std::cout << vector[i] << " ";
-	std::cout<< ")\n";
-}
+std::random_device rd;
+std::mt19937 mt(rd());
 
 Parser::Parser(std::string rulesFile) {
 	this->fileName = rulesFile;
@@ -44,16 +40,16 @@ Type Parser::stringToType(std::string str) {
 		return CUBE;
 	else if (!str.compare("cylinder"))
 		return CYLINDER;
+	else if (!str.compare("scope"))
+		return SCOPE;
 	else throw "Can't parse string to type.";
 }
 
 std::function<std::vector<Shape>(Shape)> Parser::stringToRule(std::string string){
-	auto tokens = splitString(string, ' ', ' ');
+	auto tokens = splitString(string, ' ', ' '); // oprations to be performed
 	std::string sourceScope = tokens[0]; //shape the rule will be applied
-	 
 	std::vector<Shape> *result = new std::vector<Shape>() ; //shapes being return to build tree
 	std::stack<Shape>  *processing = new std::stack<Shape>(); //shape being processed
-	
 	std::function<void(Shape)> rule = [=](Shape x) { //initial rule
 			(*processing).push(x);
 	};
@@ -61,34 +57,34 @@ std::function<std::vector<Shape>(Shape)> Parser::stringToRule(std::string string
 	for (int i = 2; i < tokens.size(); i++) { // i=2 skipping sourceScope and '-'
 		
 		if (!tokens[i].find("T")) { //Scope translation
-		 	auto arguments = splitString(splitString(tokens[i], '(', ')')[1],',',',');
+			auto funs = parseArguments(tokens[i]);
 		 	rule = [=](Shape x) {
 				rule(x);
 				Shape& currentShape = (*processing).top();
-				currentShape.translate(Vector3D(std::stof(arguments[0]), std::stof(arguments[1]), std::stof(arguments[2])));
+				currentShape.translate(Vector3D(funs[0](), funs[1](), funs[2]()));
 			};
 		}
 
 		else if (!tokens[i].find("Subdiv")) {
-			auto arguments = splitString(splitString(tokens[i], '(', ')')[1], ',', ',');
+			auto args = parseArguments(tokens[i]);
 			auto parameters = splitString(splitString(tokens[i], '{', '}')[1], ',', ',');
+			int axis = round(args[0]());
 			rule = [=](Shape x) {
 				rule(x);
 				Shape& currentShape = (*processing).top();
-				int axis = std::stoi(arguments[0]);
 				std::vector<float> ratios;
-				for (int i = 1; i < arguments.size(); ratios.push_back(std::stof(arguments[i++]))); //parsion ratios
+				for (int i = 1; i < args.size(); ratios.push_back(args[i++]())); //parsion ratios
 				auto newShapes = currentShape.split(axis, ratios, parameters);
 				std::copy(newShapes.begin(), newShapes.end(), std::back_inserter((*result))); //save new shape to result
 			};
 		}
 
 		else if (!tokens[i].find("S")) { // Set new scope size
-			auto arguments = splitString(splitString(tokens[i], '(', ')')[1], ',', ',');
+			 auto funs = parseArguments(tokens[i]);
 			rule = [=](Shape x) {
 				rule(x);
 				Shape& currentShape = (*processing).top();
-				currentShape.setSize(Vector3D(std::stof(arguments[0]), std::stof(arguments[1]), std::stof(arguments[2])));
+				currentShape.setSize(Vector3D(funs[0](), funs[1](), funs[2]()));
 			};
 		}
 
@@ -134,6 +130,21 @@ std::function<std::vector<Shape>(Shape)> Parser::stringToRule(std::string string
 		if(sourceScope.compare(shape.getName())==0)
 			rule(shape);
 		return (*result);};
+}
+
+std::vector<std::function<float()>> Parser::parseArguments(std::string token)
+{
+	auto args = splitString(splitString(token, '(', ')')[1], ',', ',');
+	std::vector<std::function<float()>> funs;
+	for (int k = 0; k < args.size(); k++) {
+		if (!args[k].find("rnd")) {
+			auto rArgs = splitString(splitString(args[k], '<', '>')[1], '-', '-');
+			std::uniform_real_distribution<double> dist(std::stof(rArgs[0]), std::stof(rArgs[1]));
+			funs.push_back([=] { return dist(mt); });
+		}
+		else funs.push_back([=] { return std::stof(args[k]); });
+	}
+	return funs;
 }
 
 std::vector<std::function<std::vector<Shape>(Shape)>> Parser::parseRules() {

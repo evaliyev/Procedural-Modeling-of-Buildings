@@ -36,16 +36,16 @@ void ShapeTree::buildTree(std::vector<std::function<std::vector<Shape>(Shape)>> 
     Node *current = new Node(axiom, children);
     this->root = current;
     shapeQueue.push_back(current);
-    std::cout<<shapeQueue.size()<<std::endl;
+    //std::cout<<shapeQueue.size()<<std::endl;
 
     while (!shapeQueue.empty()) {
 		current = shapeQueue.front();
-        std::cout<<shapeQueue.size()<<std::endl;
-        std::cout<<current->getShape()<<std::endl;
+        //std::cout<<shapeQueue.size()<<std::endl;
+        //std::cout<<current->getShape()<<std::endl;
 
         std::vector<Node *> children = applyRules(current, rules);
         for (int j = 0; j < children.size(); j++) {
-            std::cout<<children[j]->getShape()<<std::endl;
+            //std::cout<<children[j]->getShape()<<std::endl;
             if (children[j]->getShape().getType() == SCOPE)
                 shapeQueue.push_back(children[j]);
 

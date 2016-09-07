@@ -68,12 +68,4 @@
       <Filter>Resource Files</Filter>
     </Text>
   </ItemGroup>
-  <ItemGroup>
-    <Image Include="bricks.bmp">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="grass.bmp">
-      <Filter>Resource Files</Filter>
-    </Image>
-  </ItemGroup>
 </Project>

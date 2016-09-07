@@ -1,11 +1,11 @@
 #pragma once
-#include <GL\glut.h>
-#include<iostream>
+#include <GL/glut.h>
+#include <iostream>
 #include <map>
 #include<vector>
 
 class Textures {
-	std::vector<std::string> files = { "bricks", "wood", "grass" };
+	std::vector<std::string> files = { "bricks", "wood", "grass", "grey_wall" };
 	std::map<std::string, GLuint> textures;
 	GLuint loadTexture(const char * filename, int width, int height);
 	

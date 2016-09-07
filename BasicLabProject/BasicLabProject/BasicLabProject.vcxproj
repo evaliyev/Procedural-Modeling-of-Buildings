@@ -145,10 +145,6 @@
     <Text Include="rules.txt" />
     <Text Include="rules2.txt" />
   </ItemGroup>
-  <ItemGroup>
-    <Image Include="bricks.bmp" />
-    <Image Include="grass.bmp" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

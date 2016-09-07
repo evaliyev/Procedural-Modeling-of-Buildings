@@ -2,6 +2,8 @@
 #include<iostream>
 #include<vector>
 #include<functional>
+#include<random>
+#include <math.h>  
 #include"Shape.h"
 
 
@@ -11,6 +13,8 @@ class Parser {
 	std::vector<std::string> splitString(std::string str, char delimeter, char delimeter2); 
 	Type stringToType(std::string str);
 	std::function<std::vector<Shape>(Shape)> stringToRule(std::string string); 
+
+	std::vector<std::function<float()>> parseArguments(std::string token);
 public:
 	Parser(std::string rulesFile);
 	std::vector<std::function<std::vector<Shape>(Shape)>> parseRules(); 
