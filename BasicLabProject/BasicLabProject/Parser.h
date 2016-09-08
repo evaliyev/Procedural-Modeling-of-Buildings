@@ -15,6 +15,7 @@ class Parser {
 	Type stringToType(std::string str);
 	std::function<std::vector<Shape>(Shape)> stringToRule(std::string string); 
 	std::vector<std::function<float()>> parseArguments(std::string token);
+	std::vector<std::string> parseParameters(std::string token);
 public:
 	Parser(std::string rulesFile);
 	std::vector<std::function<std::vector<Shape>(Shape)>> parseRules(); 

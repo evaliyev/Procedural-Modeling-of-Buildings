@@ -71,7 +71,7 @@ std::function<std::vector<Shape>(Shape)> Parser::stringToRule(std::string string
 
 		else if (startsWith(tokens[i], "Subdiv")) {
 			auto args = parseArguments(tokens[i]);
-			auto parameters = splitString(splitString(tokens[i], '{', '}')[1], ',', ',');
+			auto parameters = parseParameters(tokens[i]);
 			int axis = round(args[0]());
 			rule = [=](Shape x) {
 				rule(x);
@@ -119,7 +119,7 @@ std::function<std::vector<Shape>(Shape)> Parser::stringToRule(std::string string
 
 		else if (startsWith(tokens[i], "Repeat")) { // splitting scope
 			auto args = parseArguments(tokens[i]);
-			auto parameters = splitString(splitString(tokens[i], '{', '}')[1], ',', ',');
+			auto parameters = parseParameters(tokens[i]);
 			int axis = round(args[0]());
 			rule = [=](Shape x) {
 				rule(x);
@@ -136,6 +136,17 @@ std::function<std::vector<Shape>(Shape)> Parser::stringToRule(std::string string
 				currentShape.rotate(Vector3D(args[0](), args[1](), args[2]()));
 			};
 		}
+		else if (startsWith(tokens[i], "Comp")) { // rotating around axes
+			auto type = splitString(tokens[i], '(', ')')[1];
+			auto parameters = parseParameters(tokens[i]);
+			rule = [=](Shape x) {
+				rule(x);
+				Shape& currentShape = (*processing).top();
+				auto newShapes = currentShape.componentSplit (type,parameters);
+				std::copy(newShapes.begin(), newShapes.end(), std::back_inserter((*result)));
+			};
+		}
+		else throw "Parser: no such command";
 	}
 
 	return [=](Shape shape){
@@ -157,6 +168,10 @@ std::vector<std::function<float()>> Parser::parseArguments(std::string token){
 		else funs.push_back([=] { return std::stof(args[k]); });
 	}
 	return funs;
+}
+
+std::vector<std::string> Parser::parseParameters(std::string token){
+	return splitString(splitString(token, '{', '}')[1], ',', ',');
 }
 
 std::vector<std::function<std::vector<Shape>(Shape)>> Parser::parseRules() {
