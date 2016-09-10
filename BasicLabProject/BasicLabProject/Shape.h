@@ -46,9 +46,6 @@ public:
     std::string getName();
 	void setName(std::string name);
 
-    /* Adds an instance of a geometric primitive with identifier objId */
-    Shape getInstance(std::string objId);
-
     /* Split rule splits the current scope along one axis.
     Example: fac -> Subdiv(1,3.5,0.3,3,3,3){ floor | ledge | floor | floor | floor } 
 	Axes x=0, y=1, z=2 */
@@ -63,8 +60,7 @@ public:
     /* Splits the shape into shapes of lesser dimensions :
     a -> Comp(type, param) { A | B | ... | Z }
     Where type identifies the type of the component split with associated parameters param(if any).*/
-    std::vector<Shape> componentSplit(std::string type, int param, std::string *newShapeNames);
-
+	std::vector<Shape> Shape::componentSplit(std::string type, std::vector<std::string> newShapeNames);
 };
 
 /* Analog to Java.lang.Object.toString() */

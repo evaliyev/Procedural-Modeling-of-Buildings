@@ -1,0 +1,6 @@
+main => T(0,0,5) S(30,10,10) Comp(fases){A,B,C,D,E,F}
+B => I(cube)
+C => I(cube)
+A => I(cube)
+D => I(cube)
+F => I(cube)

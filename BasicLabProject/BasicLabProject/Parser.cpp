@@ -177,7 +177,7 @@ std::vector<std::string> Parser::parseParameters(std::string token){
 std::vector<std::function<std::vector<Shape>(Shape)>> Parser::parseRules() {
 	std::vector<std::function<std::vector<Shape>(Shape)>> rules;
 	auto lines = readLines(this->fileName);
-	for each (auto line in lines)
+	for (auto line : lines)
 		rules.push_back(stringToRule(line));
 	return rules;
 }

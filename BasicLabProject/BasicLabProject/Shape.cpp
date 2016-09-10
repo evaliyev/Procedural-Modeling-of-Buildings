@@ -26,13 +26,13 @@ Type Shape::getType() {return this->type; }
 
 void Shape::setType(Type type) {this->type = type; }
 
-Vector3D Shape::rotate_around_axis(Vector3D &position, float degrees, int axis) {
+Vector3D Shape::rotate_around_axis(Vector3D &size, float degrees, int axis) {
     float angle = PI * degrees / 180.0;
     float cos_angle = cos(angle);
     float sin_angle = sin(angle);
-    float posX = position.getX();
-    float posY = position.getY();
-    float posZ = position.getZ();
+    float posX = size.getX();
+    float posY = size.getY();
+    float posZ = size.getZ();
     float x, y, z; 
     switch (axis) {
         case 0: {
@@ -44,7 +44,7 @@ Vector3D Shape::rotate_around_axis(Vector3D &position, float degrees, int axis) 
         case 1: {
             x = cos_angle * posX + sin_angle * posZ;
             y = posY;
-            y = -sin_angle * posX + cos_angle * posZ;
+            z = -sin_angle * posX + cos_angle * posZ;
         }
             break;
         case 2: {
@@ -61,10 +61,10 @@ Vector3D Shape::rotate_around_axis(Vector3D &position, float degrees, int axis) 
 }
 
 Shape &Shape::rotate(Vector3D &angles) {
-    Vector3D rotatedX = rotate_around_axis(this->scopePosition, angles.getX(), 0);
+    Vector3D rotatedX = rotate_around_axis(this->size, angles.getX(), 0);
     Vector3D rotatedY = rotate_around_axis(rotatedX, angles.getY(), 1);
     Vector3D rotatedZ = rotate_around_axis(rotatedY, angles.getZ(), 2);
-    this->scopePosition.set(rotatedZ);
+    this->size.set(rotatedZ);
     return *this;
 }
 
@@ -118,17 +118,62 @@ std::vector<Shape> Shape::repeat(int axis, int times, std::string newShapesNames
 
     Vector3D newPosition = this->scopePosition.copy();
     Vector3D newSize = this->size.copy();
-    float positionChange = this->scopePosition.getElement(axis);
-
+	
+	float initPosition = this->scopePosition.getElement(axis);
     for(int i=0; i<times; i++){
-        positionChange = i*ratio;
-        newPosition.setElement(axis,positionChange);
+        newPosition.setElement(axis, initPosition + i*ratio);
         newSize.setElement(axis,ratio);
         Shape newShape(newShapesNames,newPosition,newSize, this->type);
         successors.push_back(newShape);
     }
 
     return successors;
+}
+
+std::vector<Shape> Shape::componentSplit(std::string type, std::vector<std::string> newShapeNames) {
+	std::vector<Shape> newShapes;
+	auto position = this->getScopePosition();
+	auto size = this->getSize();
+	
+	//front
+	auto fp = position.copy();
+	auto fs = size.copy();
+	fs.setElement(0,0);
+	newShapes.push_back(Shape(newShapeNames[0],fp,fs,SCOPE));
+	//back
+	auto bp = position.copy();
+	auto bs = size.copy();
+	bp.setElement(0,bp.getX()+ bs.getX());
+	bs.setElement(0, 0);
+	newShapes.push_back(Shape(newShapeNames[1], bp, bs, SCOPE));
+	//left
+	auto lp = position.copy();
+	auto ls = size.copy();
+	ls.setElement(2, 0);
+	std::cout << "l " << ls << std::endl;
+	std::cout << lp << std::endl;
+	newShapes.push_back(Shape(newShapeNames[2], lp, ls, SCOPE));
+	//right
+	auto rp = position.copy();
+	auto rs = size.copy();
+	rp.setElement(2, rp.getZ()+rs.getZ());
+	rs.setElement(2, 0);
+	newShapes.push_back(Shape(newShapeNames[3], rp, rs, SCOPE));
+
+	if (type.compare("sides") != 0) {
+	//top
+		auto tp = position.copy();
+		auto ts = size.copy();
+		tp.setElement(1, tp.getY()+ ts.getY());
+		ts.setElement(1, 0);
+		newShapes.push_back(Shape(newShapeNames[4], tp, ts, SCOPE));
+	//bottom
+		auto bbp = position.copy();
+		auto bbs = size.copy();
+		bbs.setElement(1, 0);
+		newShapes.push_back(Shape(newShapeNames[5], bbp, bbs, SCOPE));
+	}
+	return newShapes;
 }
 
 std::ostream &operator<<(std::ostream &strm, const Shape &shape) {
