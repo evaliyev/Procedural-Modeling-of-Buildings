@@ -21,7 +21,7 @@ int main(int argc, char** argv) {
 
  
 
-	Parser parser("rules2.txt");
+	Parser parser("rules.txt");
 	auto rules = parser.parseRules();
 	ShapeTree tree;
 	tree.buildTree(rules, Shape("main", Vector3D(0,0,0), Vector3D(100, 60, 100), SCOPE));

@@ -1,2 +1,4 @@
-main => T(5,0,rnd<0-100>) I(cube)
-X => [ T(0,0,5) S(8,10,18) I(cube) ] T(6,0,0) S(7,13,19) I(cube) T(0,0,16) S(8,15,8) I(cylinder)
+main => T(0,0,5) S(10,10,10) Repeat(0,5){A,B,C,D,E}
+A => I(cube)
+C => I(cube)
+E => I(cube)

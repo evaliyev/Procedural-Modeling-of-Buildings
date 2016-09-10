@@ -124,7 +124,7 @@ std::function<std::vector<Shape>(Shape)> Parser::stringToRule(std::string string
 			rule = [=](Shape x) {
 				rule(x);
 				Shape& currentShape = (*processing).top();
-				auto newShapes = currentShape.repeat(axis, round(args[1]()), parameters[0]);
+				auto newShapes = currentShape.repeat(axis, round(args[1]()), parameters);
 				std::copy(newShapes.begin(), newShapes.end(), std::back_inserter((*result)));
 			};
 		}

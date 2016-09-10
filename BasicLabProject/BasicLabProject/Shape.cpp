@@ -112,7 +112,7 @@ void Shape::setName(std::string name){
 	this->name = name;
 }
 
-std::vector<Shape> Shape::repeat(int axis, int times, std::string newShapesNames) {
+std::vector<Shape> Shape::repeat(int axis, int times, std::vector<std::string> newShapesNames) {
     std::vector<Shape> successors;
     float ratio = this->size.getElement(axis)/times;
 
@@ -123,7 +123,7 @@ std::vector<Shape> Shape::repeat(int axis, int times, std::string newShapesNames
     for(int i=0; i<times; i++){
         newPosition.setElement(axis, initPosition + i*ratio);
         newSize.setElement(axis,ratio);
-        Shape newShape(newShapesNames,newPosition,newSize, this->type);
+        Shape newShape(newShapesNames[i],newPosition,newSize, this->type);
         successors.push_back(newShape);
     }
 

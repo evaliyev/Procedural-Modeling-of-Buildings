@@ -55,7 +55,7 @@ public:
     Example :floor -> Repeat(0, 2) { B }.
 	Axes x=0, y=1, z=2 
 	*/
-    std::vector<Shape> repeat(int axis, int times, std::string newShapesNames);
+    std::vector<Shape> repeat(int axis, int times, std::vector<std::string> newShapesNames);
 
     /* Splits the shape into shapes of lesser dimensions :
     a -> Comp(type, param) { A | B | ... | Z }
