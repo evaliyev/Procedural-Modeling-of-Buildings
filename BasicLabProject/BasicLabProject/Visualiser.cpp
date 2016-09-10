@@ -336,16 +336,21 @@ void renderBitmapString(float x, float y, float z, void *font, const char *strin
 
 void drawBlock(Vector3D& basePoint, Vector3D& size) {
 	glBegin(GL_QUADS);
+
+	float timesX = size.getX() / 10;
+	float timesY = size.getY() / 10;
+	float timesZ = size.getZ() / 10;
+
 	//top
 	glColor3f(0.0f, 0.0f, 1.0f);
 	glNormal3f(0.0F, 1.0F, 0.0F);
 	glTexCoord2f(0, 0);
 	glVertex3f(basePoint.getX(), basePoint.getY() + size.getY(), basePoint.getZ());
-	glTexCoord2f(1, 0);
+	glTexCoord2f(timesX, 0);
 	glVertex3f(basePoint.getX() + size.getX(), basePoint.getY() + size.getY(), basePoint.getZ());
-	glTexCoord2f(1, 1);
+	glTexCoord2f(timesX, timesZ);
 	glVertex3f(basePoint.getX() + size.getX(), basePoint.getY() + size.getY(), basePoint.getZ() + size.getZ());
-	glTexCoord2f(0, 1);
+	glTexCoord2f(0, timesZ);
 	glVertex3f(basePoint.getX(), basePoint.getY() + size.getY(), basePoint.getZ() + size.getZ());
 
 	//bottom
@@ -353,11 +358,11 @@ void drawBlock(Vector3D& basePoint, Vector3D& size) {
 	glNormal3f(0.0F, -1.0F, 0.0F);
 	glTexCoord2f(0, 0);
 	glVertex3f(basePoint.getX(), basePoint.getY(), basePoint.getZ());
-	glTexCoord2f(1, 0);
+	glTexCoord2f(timesX, 0);
 	glVertex3f(basePoint.getX() + size.getX(), basePoint.getY(), basePoint.getZ());
-	glTexCoord2f(1, 1);
+	glTexCoord2f(timesX, timesZ);
 	glVertex3f(basePoint.getX() + size.getX(), basePoint.getY(), basePoint.getZ() + size.getZ());
-	glTexCoord2f(0, 1);
+	glTexCoord2f(0, timesZ);
 	glVertex3f(basePoint.getX(), basePoint.getY(), basePoint.getZ() + size.getZ());
 
 	//front
@@ -365,11 +370,11 @@ void drawBlock(Vector3D& basePoint, Vector3D& size) {
 	glNormal3f(0.0F, 0.0F, -1.0F);
 	glTexCoord2f(0, 0);
 	glVertex3f(basePoint.getX(), basePoint.getY(), basePoint.getZ());
-	glTexCoord2f(1, 0);
+	glTexCoord2f(timesX, 0);
 	glVertex3f(basePoint.getX() + size.getX(), basePoint.getY(), basePoint.getZ());
-	glTexCoord2f(1, 1);
+	glTexCoord2f(timesX, timesY);
 	glVertex3f(basePoint.getX() + size.getX(), basePoint.getY() + size.getY(), basePoint.getZ());
-	glTexCoord2f(0, 1);
+	glTexCoord2f(0, timesY);
 	glVertex3f(basePoint.getX(), basePoint.getY() + size.getY(), basePoint.getZ());
 	
 	//back
@@ -377,35 +382,35 @@ void drawBlock(Vector3D& basePoint, Vector3D& size) {
 	glNormal3f(0.0F, 0.0F, 1.0F);
 	glTexCoord2f(0, 0);
 	glVertex3f(basePoint.getX(), basePoint.getY(), basePoint.getZ() + size.getZ());
-	glTexCoord2f(1, 0);
+	glTexCoord2f(timesZ, 0);
 	glVertex3f(basePoint.getX() + size.getX(), basePoint.getY(), basePoint.getZ() + size.getZ());
-	glTexCoord2f(1, 1);
+	glTexCoord2f(timesZ, timesX);
 	glVertex3f(basePoint.getX() + size.getX(), basePoint.getY() + size.getY(), basePoint.getZ() + size.getZ());
-	glTexCoord2f(0, 1);
+	glTexCoord2f(0, timesX);
 	glVertex3f(basePoint.getX(), basePoint.getY() + size.getY(), basePoint.getZ() + size.getZ());
 	
 	// left
 	glColor3f(0.1f, 0.1f, 0.1f);
 	glNormal3f(-1.0F, 0.0F, 0.0F);
-	glTexCoord2f(1, 0);
+	glTexCoord2f(timesZ, 0);
 	glVertex3f(basePoint.getX(), basePoint.getY(), basePoint.getZ());
 	glTexCoord2f(0, 0);
 	glVertex3f(basePoint.getX(), basePoint.getY(), basePoint.getZ() + size.getZ());
-	glTexCoord2f(0, 1);
+	glTexCoord2f(0, timesY);
 	glVertex3f(basePoint.getX(), basePoint.getY() + size.getY(), basePoint.getZ() + size.getZ());
-	glTexCoord2f(1, 1);
+	glTexCoord2f(timesZ, timesY);
 	glVertex3f(basePoint.getX(), basePoint.getY() + size.getY(), basePoint.getZ());
 
 	//right
 	glColor3f(1.0f, 1.0f, 0.0f);
 	glNormal3f(1.0F, 0.0F, 0.0F);
-	glTexCoord2f(1, 0);
+	glTexCoord2f(timesX, 0);
 	glVertex3f(basePoint.getX() + size.getX(), basePoint.getY(), basePoint.getZ());
 	glTexCoord2f(0, 0);
 	glVertex3f(basePoint.getX() + size.getX(), basePoint.getY(), basePoint.getZ() + size.getZ());
-	glTexCoord2f(0, 1);
+	glTexCoord2f(0, timesY);
 	glVertex3f(basePoint.getX() + size.getX(), basePoint.getY() + size.getY(), basePoint.getZ() + size.getZ());
-	glTexCoord2f(1, 1);
+	glTexCoord2f(timesX, timesY);
 	glVertex3f(basePoint.getX() + size.getX(), basePoint.getY() + size.getY(), basePoint.getZ());
 	glEnd();
 }
