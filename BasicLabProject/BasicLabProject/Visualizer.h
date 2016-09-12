@@ -23,7 +23,7 @@ void renderBitmapString(float x, float y, float z, void *font, const char *strin
 //Drawing 3d objects
 void drawBlock(Vector3D& basePoint, Vector3D& size);//draw cuboid
 void drawCylinder(Vector3D& basePoint, Vector3D& size);
-void drawPlain(float x, float z, float sizeX, float sizeZ);
+void drawPlain(Vector3D& position, Vector3D& size);
 
 //Drawing 2D objects
 void draw2DBlock(float centerX, float centerY, float width, float height);

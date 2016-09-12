@@ -12,7 +12,7 @@ GLuint Textures::loadTexture(const char * filename, int width, int height){
 	unsigned char * data;
 	FILE * file; errno_t err;
 	if ((err = fopen_s(&file, filename, "r")) != 0) {
-		std::cout << "Couldn't load image" << err;
+		throw "Couldn't load image";
 	}
 	if (file == NULL) return 0;
 	data = (unsigned char *)malloc(width * height * 3);

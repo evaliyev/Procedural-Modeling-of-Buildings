@@ -59,18 +59,21 @@ void displayFunc2(void) {
 	std::vector<Shape> &shapes = (*shapesToBeDrawn);
 
 	(*textureLoader).activateTexture("grass");
-	drawPlain(0.0, 0.0, 100.0, 100.0);
+	drawPlain(Vector3D(-100,0,-100),Vector3D(300,-1.0f,300));
 
-	(*textureLoader).activateTexture("bricks");
 
 	 for (int i = 0; i < shapes.size(); i++){
 		Shape& currentShape = shapes[i];
+		(*textureLoader).activateTexture(currentShape.getName());
 		switch (currentShape.getType()){
 		case CUBE: 
 			drawBlock(currentShape.getScopePosition(), currentShape.getSize());
 			break;
 		case CYLINDER:
 			drawCylinder(currentShape.getScopePosition(), currentShape.getSize());
+			break;
+		case PLAIN:
+			drawPlain(currentShape.getScopePosition(), currentShape.getSize());
 			break;
 		default:
 			throw "Undrawable type";
@@ -86,7 +89,7 @@ void displayFunc(void) {
 	float padding = 0.1f;
 	
 	Node *root = (*shapeTree).getRoot();
-	float areaHeight = 2.0 / 5;
+	float areaHeight = 2.0 / 8;
 	float blockHeight = areaHeight - 2 * padding;
 
 	std::deque<Node *> shapeQueue;
@@ -150,7 +153,8 @@ void initGlut(int whatToDraw, int argc, char **argv) {
 	//glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH);
 	nWindowID = glutCreateWindow("Procedural Modeling");
 	// Register callbacks:
-
+	 glEnable (GL_LINE_SMOOTH);
+ 
 	if (whatToDraw ==0) // draw 2d tree
 		glutDisplayFunc(displayFunc);
 	else { //draw 3d
@@ -381,36 +385,35 @@ void drawBlock(Vector3D& basePoint, Vector3D& size) {
 	glColor3f(0.0f, 1.0f, 0.0f);
 	glNormal3f(0.0F, 0.0F, 1.0F);
 	glTexCoord2f(0, 0);
-	glVertex3f(basePoint.getX(), basePoint.getY(), basePoint.getZ() + size.getZ());
-	glTexCoord2f(timesZ, 0);
 	glVertex3f(basePoint.getX() + size.getX(), basePoint.getY(), basePoint.getZ() + size.getZ());
-	glTexCoord2f(timesZ, timesX);
-	glVertex3f(basePoint.getX() + size.getX(), basePoint.getY() + size.getY(), basePoint.getZ() + size.getZ());
-	glTexCoord2f(0, timesX);
+	glTexCoord2f(timesX, 0);
+	glVertex3f(basePoint.getX(), basePoint.getY(), basePoint.getZ() + size.getZ());
+	glTexCoord2f(timesX, timesY);
 	glVertex3f(basePoint.getX(), basePoint.getY() + size.getY(), basePoint.getZ() + size.getZ());
-	
+	glTexCoord2f(0, timesY);
+	glVertex3f(basePoint.getX() + size.getX(), basePoint.getY() + size.getY(), basePoint.getZ() + size.getZ());
 	// left
 	glColor3f(0.1f, 0.1f, 0.1f);
 	glNormal3f(-1.0F, 0.0F, 0.0F);
-	glTexCoord2f(timesZ, 0);
-	glVertex3f(basePoint.getX(), basePoint.getY(), basePoint.getZ());
 	glTexCoord2f(0, 0);
+	glVertex3f(basePoint.getX(), basePoint.getY(), basePoint.getZ());
+	glTexCoord2f(timesZ,0);
 	glVertex3f(basePoint.getX(), basePoint.getY(), basePoint.getZ() + size.getZ());
-	glTexCoord2f(0, timesY);
-	glVertex3f(basePoint.getX(), basePoint.getY() + size.getY(), basePoint.getZ() + size.getZ());
 	glTexCoord2f(timesZ, timesY);
+	glVertex3f(basePoint.getX(), basePoint.getY() + size.getY(), basePoint.getZ() + size.getZ());
+	glTexCoord2f(0, timesY);
 	glVertex3f(basePoint.getX(), basePoint.getY() + size.getY(), basePoint.getZ());
 
 	//right
 	glColor3f(1.0f, 1.0f, 0.0f);
 	glNormal3f(1.0F, 0.0F, 0.0F);
-	glTexCoord2f(timesX, 0);
-	glVertex3f(basePoint.getX() + size.getX(), basePoint.getY(), basePoint.getZ());
 	glTexCoord2f(0, 0);
+	glVertex3f(basePoint.getX() + size.getX(), basePoint.getY(), basePoint.getZ());
+	glTexCoord2f(timesZ, 0);
 	glVertex3f(basePoint.getX() + size.getX(), basePoint.getY(), basePoint.getZ() + size.getZ());
-	glTexCoord2f(0, timesY);
+	glTexCoord2f(timesZ, timesY);
 	glVertex3f(basePoint.getX() + size.getX(), basePoint.getY() + size.getY(), basePoint.getZ() + size.getZ());
-	glTexCoord2f(timesX, timesY);
+	glTexCoord2f(0, timesY);
 	glVertex3f(basePoint.getX() + size.getX(), basePoint.getY() + size.getY(), basePoint.getZ());
 	glEnd();
 }
@@ -432,23 +435,51 @@ void drawCylinder(Vector3D & basePoint, Vector3D & size){
 	glPopMatrix();
 }
 
-void drawPlain(float x, float z, float sizeX, float sizeZ) {
-	glBegin(GL_QUADS);
-	glColor3f(1.0f, 1.0f, 1.0f);
-	glNormal3f(0.0f, 1.0f, 0.0f);
-	 
-	glTexCoord2f(0, 0);
-	glVertex3f(x, 0.0F, z);
+void drawPlain(Vector3D& position, Vector3D& size) {
+	float timesX = size.getX() / 10;
+	float timesY = size.getY() / 10;
+	float timesZ = size.getZ() / 10;
 
-	glTexCoord2f(0, 2);
-	glVertex3f(x, 0.0F, z + sizeZ);
+	glBegin(GL_QUADS);	
+	
 
-	glTexCoord2f(2, 2);
-	glVertex3f(x + sizeX, 0.0F, z+sizeZ);
-
-	glTexCoord2f(2, 0);
-	glVertex3f(x + sizeX, 0.0F, z);
-	glEnd();
+	if (size.getX() < 0) {
+		glNormal3f(size.getX()+2, 0.0F, 0.0F);
+		glTexCoord2f(0, 0);
+		glVertex3f(position.getX(), position.getY(), position.getZ());
+		glTexCoord2f(timesZ, 0);
+		glVertex3f(position.getX(), position.getY(), position.getZ()+size.getZ());
+		glTexCoord2f(timesZ, timesY);
+		glVertex3f(position.getX(), position.getY() + size.getY(), position.getZ() + size.getZ());
+		glTexCoord2f(0, timesY);
+		glVertex3f(position.getX(), position.getY() + size.getY(), position.getZ());
+		glEnd();
+	}
+	else if (size.getY() < 0) {
+		glNormal3f(0.0F, size.getY() + 2, 0.0F);
+		glTexCoord2f(0, 0);
+		glVertex3f(position.getX(), position.getY(), position.getZ());
+		glTexCoord2f(0, timesZ);
+		glVertex3f(position.getX(), position.getY(), position.getZ() + size.getZ());
+		glTexCoord2f(timesX, timesZ);
+		glVertex3f(position.getX() + size.getX(), position.getY(), position.getZ() + size.getZ());
+		glTexCoord2f(timesX, 0);
+		glVertex3f(position.getX() + size.getX(), position.getY(), position.getZ());
+		glEnd();
+	}
+	else if (size.getZ() < 0) {
+		glNormal3f(0.0F, 0.0F, size.getZ() + 2);
+		glTexCoord2f(0, 0);
+		glVertex3f(position.getX(), position.getY(), position.getZ());
+		glTexCoord2f(timesX, 0);
+		glVertex3f(position.getX() + size.getX(), position.getY(), position.getZ());
+		glTexCoord2f(timesX, timesY);
+		glVertex3f(position.getX() + size.getX(), position.getY() + size.getY(), position.getZ());
+		glTexCoord2f(0, timesY);
+		glVertex3f(position.getX(), position.getY() + size.getY(), position.getZ());
+		glEnd();
+	}
+	else throw "Not a plain!";
 }
 
 void draw2DBlock(float centerX, float centerY, float width, float height) {

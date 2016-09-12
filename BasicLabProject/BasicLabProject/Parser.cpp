@@ -19,7 +19,8 @@ std::vector<std::string> Parser::readLines(std::string rulesFile) {
 	std::ifstream dict_file(rulesFile);
 	std::string line;
 	while (std::getline(dict_file, line))
-		linesFromFile.push_back(line);
+		if(line[0]!='#')
+			linesFromFile.push_back(line);
 	return linesFromFile;
 }
 
@@ -48,6 +49,8 @@ Type Parser::stringToType(std::string str) {
 		return CYLINDER;
 	else if (!str.compare("scope"))
 		return SCOPE;
+	else if (!str.compare("plain"))
+		return PLAIN;
 	else throw "Can't parse string to type.";
 }
 
@@ -109,9 +112,11 @@ std::function<std::vector<Shape>(Shape)> Parser::stringToRule(std::string string
 
 		else if (startsWith(tokens[i], "I")) { // Instantiate a figure to draw
 			auto type = stringToType(splitString(tokens[i], '(', ')')[1]);
+			auto material = parseParameters(tokens[i])[0];
 			rule = [=](Shape x) {
 				rule(x);
 				Shape& currentShape = (*processing).top();
+				currentShape.setName(material);
 				currentShape.setType(type);
 				(*result).push_back(currentShape);
 			};
@@ -119,12 +124,12 @@ std::function<std::vector<Shape>(Shape)> Parser::stringToRule(std::string string
 
 		else if (startsWith(tokens[i], "Repeat")) { // splitting scope
 			auto args = parseArguments(tokens[i]);
-			auto parameters = parseParameters(tokens[i]);
+			auto newShapeName = parseParameters(tokens[i])[0];
 			int axis = round(args[0]());
 			rule = [=](Shape x) {
 				rule(x);
 				Shape& currentShape = (*processing).top();
-				auto newShapes = currentShape.repeat(axis, round(args[1]()), parameters);
+				auto newShapes = currentShape.repeat(axis, round(args[1]()), newShapeName);
 				std::copy(newShapes.begin(), newShapes.end(), std::back_inserter((*result)));
 			};
 		}

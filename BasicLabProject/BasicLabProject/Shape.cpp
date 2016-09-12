@@ -112,7 +112,7 @@ void Shape::setName(std::string name){
 	this->name = name;
 }
 
-std::vector<Shape> Shape::repeat(int axis, int times, std::vector<std::string> newShapesNames) {
+std::vector<Shape> Shape::repeat(int axis, int times, std::string newShapesName) {
     std::vector<Shape> successors;
     float ratio = this->size.getElement(axis)/times;
 
@@ -123,10 +123,9 @@ std::vector<Shape> Shape::repeat(int axis, int times, std::vector<std::string> n
     for(int i=0; i<times; i++){
         newPosition.setElement(axis, initPosition + i*ratio);
         newSize.setElement(axis,ratio);
-        Shape newShape(newShapesNames[i],newPosition,newSize, this->type);
+        Shape newShape(newShapesName,newPosition,newSize, this->type);
         successors.push_back(newShape);
     }
-
     return successors;
 }
 
@@ -138,18 +137,18 @@ std::vector<Shape> Shape::componentSplit(std::string type, std::vector<std::stri
 	//front
 	auto fp = position.copy();
 	auto fs = size.copy();
-	fs.setElement(0,0);
+	fs.setElement(0,-3);
 	newShapes.push_back(Shape(newShapeNames[0],fp,fs,SCOPE));
 	//back
 	auto bp = position.copy();
 	auto bs = size.copy();
 	bp.setElement(0,bp.getX()+ bs.getX());
-	bs.setElement(0, 0);
+	bs.setElement(0, -1);
 	newShapes.push_back(Shape(newShapeNames[1], bp, bs, SCOPE));
 	//left
 	auto lp = position.copy();
 	auto ls = size.copy();
-	ls.setElement(2, 0);
+	ls.setElement(2, -3);
 	std::cout << "l " << ls << std::endl;
 	std::cout << lp << std::endl;
 	newShapes.push_back(Shape(newShapeNames[2], lp, ls, SCOPE));
@@ -157,7 +156,7 @@ std::vector<Shape> Shape::componentSplit(std::string type, std::vector<std::stri
 	auto rp = position.copy();
 	auto rs = size.copy();
 	rp.setElement(2, rp.getZ()+rs.getZ());
-	rs.setElement(2, 0);
+	rs.setElement(2, -1);
 	newShapes.push_back(Shape(newShapeNames[3], rp, rs, SCOPE));
 
 	if (type.compare("sides") != 0) {
@@ -165,12 +164,12 @@ std::vector<Shape> Shape::componentSplit(std::string type, std::vector<std::stri
 		auto tp = position.copy();
 		auto ts = size.copy();
 		tp.setElement(1, tp.getY()+ ts.getY());
-		ts.setElement(1, 0);
+		ts.setElement(1, -1);
 		newShapes.push_back(Shape(newShapeNames[4], tp, ts, SCOPE));
 	//bottom
 		auto bbp = position.copy();
 		auto bbs = size.copy();
-		bbs.setElement(1, 0);
+		bbs.setElement(1, -3);
 		newShapes.push_back(Shape(newShapeNames[5], bbp, bbs, SCOPE));
 	}
 	return newShapes;

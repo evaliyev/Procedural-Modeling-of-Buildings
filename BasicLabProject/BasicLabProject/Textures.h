@@ -5,7 +5,8 @@
 #include<vector>
 
 class Textures {
-	std::vector<std::string> files = {"concrete", "blocks","bricks", "wood", "grass", "grey_wall","glass","windows","door" };
+	std::vector<std::string> files = { "night_office","concrete", "blocks","bricks", "wood",
+		"grass", "grey_wall","glass","windows","door","night_windows" };
 	std::map<std::string, GLuint> textures;
 	GLuint loadTexture(const char * filename, int width, int height);
 	

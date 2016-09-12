@@ -1,4 +1,19 @@
-main => T(0,0,5) S(10,10,10) Repeat(0,5){A,B,C,D,E}
-A => I(cube)
-C => I(cube)
-E => I(cube)
+main => Subdiv(1,18,2,96,4){ground,divide,floors,top}
+ground => Comp(sides){g_front,g_front,g_side,g_side}
+g_front => Repeat(2,2){g_front_part,g_front_part}
+g_front_part => Subdiv(2,2,17,2,17,2){wall,win_wall,wall,win_wall,wall}
+g_side => Subdiv(0,2,17,2,17,2){wall,win_wall,wall,door,wall}
+win_wall => Subdiv(1,1,16,1){wall,window,wall}
+window => I(plain){glass}
+door => I(plain){door}
+wall => I(plain){blocks}
+divide => T(-2,0,-2) S(44,2,84) I(cube){blocks}
+floors => Repeat(1,6){floor}
+floor => Comp(sides){front,front,side,side}
+front => I(plain){bricks}
+side => I(plain){bricks}
+# roof of the building
+top => Subdiv(2,4,72,4){top_side,top_mid,top_side}
+top_mid => Subdiv(0,4,32,4){top_side,top_center,top_side}
+top_side => I(cube){blocks}
+top_center => S(32,0,72) I(cube){blocks}
