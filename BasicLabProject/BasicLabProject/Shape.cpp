@@ -129,6 +129,26 @@ std::vector<Shape> Shape::repeat(int axis, int times, std::string newShapesName)
     return successors;
 }
 
+std::vector<Shape> Shape::realRepeat(int axis, int times, std::string newShapesName) {
+	std::vector<Shape> successors;
+
+	Vector3D newPosition = this->scopePosition.copy();
+	Vector3D newSize = this->size.copy();
+
+	float initPosition = this->scopePosition.getElement(axis);
+	for (int i = 0; i<times; i++) {
+		
+		Shape newShape(newShapesName, newPosition, newSize, this->type);
+		std::cout << newShape << std::endl;
+		successors.push_back(newShape);
+		newPosition.setElement(axis,newPosition.getElement(axis)+this->size.getElement(axis));
+		std::cout << newPosition << std::endl;
+		
+	}
+
+	return successors;
+}
+
 std::vector<Shape> Shape::componentSplit(std::string type, std::vector<std::string> newShapeNames) {
 	std::vector<Shape> newShapes;
 	auto position = this->getScopePosition();

@@ -57,6 +57,8 @@ public:
 	*/
     std::vector<Shape> repeat(int axis, int times, std::string newShapesName);
 
+	std::vector<Shape> Shape::realRepeat(int axis, int times, std::string newShapesName);
+
     /* Splits the shape into shapes of lesser dimensions :
     a -> Comp(type, param) { A | B | ... | Z }
     Where type identifies the type of the component split with associated parameters param(if any).*/

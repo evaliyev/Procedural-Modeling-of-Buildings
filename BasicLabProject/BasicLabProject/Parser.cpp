@@ -133,6 +133,17 @@ std::function<std::vector<Shape>(Shape)> Parser::stringToRule(std::string string
 				std::copy(newShapes.begin(), newShapes.end(), std::back_inserter((*result)));
 			};
 		}
+		else if (startsWith(tokens[i], "RealRepeat")) { // splitting scope
+			auto args = parseArguments(tokens[i]);
+			auto parameters = parseParameters(tokens[i]);
+			int axis = round(args[0]());
+			rule = [=](Shape x) {
+				rule(x);
+				Shape& currentShape = (*processing).top();
+				auto newShapes = currentShape.realRepeat(axis, round(args[1]()), parameters[0]);
+				std::copy(newShapes.begin(), newShapes.end(), std::back_inserter((*result)));
+			};
+		}
 		else if (startsWith(tokens[i], "R")) { // rotating around axes
 			auto args = parseArguments(tokens[i]);
 			rule = [=](Shape x) {
@@ -141,6 +152,7 @@ std::function<std::vector<Shape>(Shape)> Parser::stringToRule(std::string string
 				currentShape.rotate(Vector3D(args[0](), args[1](), args[2]()));
 			};
 		}
+
 		else if (startsWith(tokens[i], "Comp")) { // rotating around axes
 			auto type = splitString(tokens[i], '(', ')')[1];
 			auto parameters = parseParameters(tokens[i]);
