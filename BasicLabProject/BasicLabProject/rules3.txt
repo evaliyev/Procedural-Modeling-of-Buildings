@@ -1,6 +1,11 @@
-main => T(0,0,5) S(30,10,10) Comp(fases){A,B,C,D,E,F}
-B => I(cube)
-C => I(cube)
-A => I(cube)
-D => I(cube)
-F => I(cube)
+main => S(40,40,50) Subdiv(1,rnd<5-15>,20){ground,floors}
+ground => I(cube){bricks}
+floors => Repeat(1,rnd<2-8>){floor}
+floor => Comp(faces){wall_z,wall_z,wall_x,wall_x,top,bottom}
+wall_z => Subdiv(1,r0.2,r0.6,r0.2){wall_stripe,window_block_z,wall_stripe}
+wall_x => Subdiv(1,r0.2,r0.6,r0.2){wall_stripe,window_block_x,wall_stripe}
+wall_stripe => I(plain){blocks}
+window_block_z => Repeat(2,rnd<5-8>){wall_bl_z}
+window_block_x => Repeat(0,rnd<5-8>){wall_bl_x}
+wall_bl_z => Subdiv(2,r0.1,r0.8,r0.1){wall_stripe,win,wall_stripe}
+wall_bl_x => Subdiv(0,r0.1,r0.8,r0.1){wall_stripe,win,wall_stripe}
