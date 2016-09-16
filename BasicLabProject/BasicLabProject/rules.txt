@@ -1,17 +1,23 @@
-main => Subdiv(1,18,2,96,4){ground,divide,floors,top}
+main =>S (40,100,80) Subdiv(1,18,2,96,4){ground,divide,floors,top}
+# ground floor
 ground => Comp(sides){g_front,g_front,g_side,g_side}
 g_front => Repeat(2,2){g_front_part,g_front_part}
 g_front_part => Subdiv(2,2,17,2,17,2){wall,win_wall,wall,win_wall,wall}
 g_side => Subdiv(0,2,17,2,17,2){wall,win_wall,wall,door,wall}
 win_wall => Subdiv(1,1,16,1){wall,window,wall}
 window => I(plain){glass}
-door => I(plain){door}
+door => Subdiv(1,0,14,4){wall,door_part,wall}
+door_part => I(plain){door}
 wall => I(plain){blocks}
 divide => T(-2,0,-2) S(44,2,84) I(cube){blocks}
+# rules for floors
 floors => Repeat(1,6){floor}
-floor => Comp(sides){front,front,side,side}
-front => I(plain){bricks}
-side => I(plain){bricks}
+floor => Comp(sides){fl_front,fl_front,fl_side,fl_side}
+fl_front => Repeat(2,4){fl_front_part}
+fl_front_part => Subdiv(2,6,8,6){wall,fl_wall_win,wall}
+fl_side => Repeat(0,2){fl_side_part}
+fl_side_part => Subdiv(0,5,10,5){wall,fl_wall_win,wall}
+fl_wall_win => Subdiv(1,6,8,2){wall,window,wall}
 # roof of the building
 top => Subdiv(2,4,72,4){top_side,top_mid,top_side}
 top_mid => Subdiv(0,4,32,4){top_side,top_center,top_side}

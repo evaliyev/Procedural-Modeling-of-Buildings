@@ -8,6 +8,7 @@
 //random number generator objects
 std::random_device rd;
 std::mt19937 mt(rd());
+std::stack<Shape>  *processing = new std::stack<Shape>(); //shape being processed
 
 Parser::Parser(std::string rulesFile) {
 	this->fileName = rulesFile;
@@ -19,7 +20,7 @@ std::vector<std::string> Parser::readLines(std::string rulesFile) {
 	std::ifstream dict_file(rulesFile);
 	std::string line;
 	while (std::getline(dict_file, line))
-		if(line[0]!='#')
+		if(line[0]!='#') // ignoring comment lines
 			linesFromFile.push_back(line);
 	return linesFromFile;
 }
@@ -58,7 +59,7 @@ std::function<std::vector<Shape>(Shape)> Parser::stringToRule(std::string string
 	auto tokens = splitString(string, ' ', ' '); // oprations to be performed
 	std::string sourceScope = tokens[0]; //shape the rule will be applied
 	std::vector<Shape> *result = new std::vector<Shape>() ; //shapes being return to build tree
-	std::stack<Shape>  *processing = new std::stack<Shape>(); //shape being processed
+	
 	std::function<void(Shape)> rule = [=](Shape x) { (*processing).push(x); };  //initial rule
 
 	for (int i = 2; i < tokens.size(); i++) { // i=2 skipping sourceScope and '=>'
@@ -72,7 +73,7 @@ std::function<std::vector<Shape>(Shape)> Parser::stringToRule(std::string string
 			};
 		}
 
-		else if (startsWith(tokens[i], "Subdiv")) {
+		else if (startsWith(tokens[i], "Subdiv")) { // divide scope in smaller scopes
 			auto args = parseArguments(tokens[i]);
 			auto parameters = parseParameters(tokens[i]);
 			int axis = round(args[0]());
@@ -80,7 +81,7 @@ std::function<std::vector<Shape>(Shape)> Parser::stringToRule(std::string string
 				rule(x);
 				Shape& currentShape = (*processing).top();
 				std::vector<float> ratios;
-				for (int i = 1; i < args.size(); ratios.push_back(args[i++]())); //parsion ratios
+				for (int i = 1; i < args.size(); ratios.push_back(args[i++]())); //parsing ratios
 				auto newShapes = currentShape.split(axis, ratios, parameters);
 				std::copy(newShapes.begin(), newShapes.end(), std::back_inserter((*result))); //save new shape to result
 			};
@@ -112,17 +113,17 @@ std::function<std::vector<Shape>(Shape)> Parser::stringToRule(std::string string
 
 		else if (startsWith(tokens[i], "I")) { // Instantiate a figure to draw
 			auto type = stringToType(splitString(tokens[i], '(', ')')[1]);
-			auto material = parseParameters(tokens[i])[0];
+			auto material = parseParameters(tokens[i])[0]; // texture to draw
 			rule = [=](Shape x) {
 				rule(x);
 				Shape& currentShape = (*processing).top();
-				currentShape.setName(material);
+				currentShape.setName(material); 
 				currentShape.setType(type);
 				(*result).push_back(currentShape);
 			};
 		}
 
-		else if (startsWith(tokens[i], "Repeat")) { // splitting scope
+		else if (startsWith(tokens[i], "Repeat")) { // splitting scope into the same objects
 			auto args = parseArguments(tokens[i]);
 			auto newShapeName = parseParameters(tokens[i])[0];
 			int axis = round(args[0]());
@@ -130,10 +131,10 @@ std::function<std::vector<Shape>(Shape)> Parser::stringToRule(std::string string
 				rule(x);
 				Shape& currentShape = (*processing).top();
 				auto newShapes = currentShape.repeat(axis, round(args[1]()), newShapeName);
-				std::copy(newShapes.begin(), newShapes.end(), std::back_inserter((*result)));
+				std::copy(newShapes.begin(), newShapes.end(), std::back_inserter((*result))); //save new shape to result
 			};
 		}
-		else if (startsWith(tokens[i], "RealRepeat")) { // splitting scope
+		else if (startsWith(tokens[i], "RealRepeat")) { // repeat shape along axis
 			auto args = parseArguments(tokens[i]);
 			auto parameters = parseParameters(tokens[i]);
 			int axis = round(args[0]());
@@ -141,7 +142,7 @@ std::function<std::vector<Shape>(Shape)> Parser::stringToRule(std::string string
 				rule(x);
 				Shape& currentShape = (*processing).top();
 				auto newShapes = currentShape.realRepeat(axis, round(args[1]()), parameters[0]);
-				std::copy(newShapes.begin(), newShapes.end(), std::back_inserter((*result)));
+				std::copy(newShapes.begin(), newShapes.end(), std::back_inserter((*result))); //save new shape to result
 			};
 		}
 		else if (startsWith(tokens[i], "R")) { // rotating around axes
@@ -153,14 +154,14 @@ std::function<std::vector<Shape>(Shape)> Parser::stringToRule(std::string string
 			};
 		}
 
-		else if (startsWith(tokens[i], "Comp")) { // rotating around axes
+		else if (startsWith(tokens[i], "Comp")) { // split scope into  plains
 			auto type = splitString(tokens[i], '(', ')')[1];
 			auto parameters = parseParameters(tokens[i]);
 			rule = [=](Shape x) {
 				rule(x);
 				Shape& currentShape = (*processing).top();
 				auto newShapes = currentShape.componentSplit (type,parameters);
-				std::copy(newShapes.begin(), newShapes.end(), std::back_inserter((*result)));
+				std::copy(newShapes.begin(), newShapes.end(), std::back_inserter((*result))); //save new shape to result
 			};
 		}
 		else throw "Parser: no such command";
@@ -168,7 +169,7 @@ std::function<std::vector<Shape>(Shape)> Parser::stringToRule(std::string string
 
 	return [=](Shape shape){
 		(*result).clear();
-		if(sourceScope.compare(shape.getName())==0)
+		if(sourceScope.compare(shape.getName())==0) // apply rule if name in rule head matches
 			rule(shape);
 		return (*result);};
 }
@@ -177,12 +178,23 @@ std::vector<std::function<float()>> Parser::parseArguments(std::string token){
 	auto args = splitString(splitString(token, '(', ')')[1], ',', ',');
 	std::vector<std::function<float()>> funs;
 	for (int k = 0; k < args.size(); k++) {
-		if (!args[k].find("rnd")) {
+		if (startsWith(args[k],"rnd")) {
 			auto rArgs = splitString(splitString(args[k], '<', '>')[1], '-', '-');
 			std::uniform_real_distribution<double> dist(std::stof(rArgs[0]), std::stof(rArgs[1]));
 			funs.push_back([=] { return dist(mt); });
 		}
-		else funs.push_back([=] { return std::stof(args[k]); });
+		else if (startsWith(args[k], "r")) {
+			int axis = funs[0]();
+			std::string number = args[k].substr(1, args[k].length());
+			funs.push_back([=] {
+				Shape& currentShape = (*processing).top();
+				float size = currentShape.getSize().getElement(axis);;
+				return std::stof(number)*size; });
+		}
+		else {
+			float value = std::stof(args[k]);
+			funs.push_back([=] { return value; });
+		}
 	}
 	return funs;
 }

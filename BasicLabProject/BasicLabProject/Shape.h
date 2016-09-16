@@ -29,12 +29,6 @@ public:
     /* Sets the size of the scope */
     Shape &setSize(Vector3D &newSize);
 
-    /* Pops the current scope on a stack */
-    static Shape &pop(std::stack<Shape> shapes);
-
-    /* Pushes the current scope on a stack */
-    static void push(std::stack<Shape> shapes, Shape &shape);
-
     void setType(Type type);
 
     Type getType();

@@ -76,7 +76,7 @@ Shape &Shape::setSize(Vector3D &newSize) {
 std::vector<Shape> Shape::split(int axis, std::vector<float> ratios, std::vector<std::string> newShapeNames) {
     std::vector<Shape> successors;
     if (ratios.size() != newShapeNames.size()) {
-        std::cout << "Illegal split, num of ratios and names should be the same" << std::endl;
+        throw "Illegal split, num of ratios and names should be the same" ;
         successors.push_back(*this);
         return successors;
     }
@@ -93,17 +93,6 @@ std::vector<Shape> Shape::split(int axis, std::vector<float> ratios, std::vector
         successors.push_back(newShape);
     }
     return successors;
-}
-
-void Shape::push(std::stack<Shape> shapes, Shape &shape) {
-    shapes.push(shape);
-    //shape.name or no_name?
-}
-
-Shape &Shape::pop(std::stack<Shape> shapes) {
-    Shape& old = shapes.top();
-    shapes.pop();
-    return old;
 }
 
 std::string Shape::getName() { return this->name; }
@@ -139,10 +128,10 @@ std::vector<Shape> Shape::realRepeat(int axis, int times, std::string newShapesN
 	for (int i = 0; i<times; i++) {
 		
 		Shape newShape(newShapesName, newPosition, newSize, this->type);
-		std::cout << newShape << std::endl;
+		//std::cout << newShape << std::endl;
 		successors.push_back(newShape);
 		newPosition.setElement(axis,newPosition.getElement(axis)+this->size.getElement(axis));
-		std::cout << newPosition << std::endl;
+		//std::cout << newPosition << std::endl;
 		
 	}
 
@@ -169,8 +158,8 @@ std::vector<Shape> Shape::componentSplit(std::string type, std::vector<std::stri
 	auto lp = position.copy();
 	auto ls = size.copy();
 	ls.setElement(2, -3);
-	std::cout << "l " << ls << std::endl;
-	std::cout << lp << std::endl;
+	//std::cout << "l " << ls << std::endl;
+	//std::cout << lp << std::endl;
 	newShapes.push_back(Shape(newShapeNames[2], lp, ls, SCOPE));
 	//right
 	auto rp = position.copy();

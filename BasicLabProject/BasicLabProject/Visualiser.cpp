@@ -59,7 +59,7 @@ void displayFunc2(void) {
 	std::vector<Shape> &shapes = (*shapesToBeDrawn);
 
 	(*textureLoader).activateTexture("grass");
-	drawPlain(Vector3D(-100,0,-100),Vector3D(300,-1.0f,300));
+	drawPlain(Vector3D(-100,0,-100),Vector3D(400,-1.0f,400));
 
 
 	 for (int i = 0; i < shapes.size(); i++){
