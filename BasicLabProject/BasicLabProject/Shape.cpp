@@ -69,7 +69,12 @@ Shape &Shape::rotate(Vector3D &angles) {
 }
 
 Shape &Shape::setSize(Vector3D &newSize) {
-    this->size = newSize;
+	if (newSize.getX() > -1000)
+		this->size.setElement(0, newSize.getX());
+	if (newSize.getY() > -1000)
+		this->size.setElement(1, newSize.getY());
+	if (newSize.getZ() > -1000)
+		this->size.setElement(2, newSize.getZ());
     return *this;
 }
 

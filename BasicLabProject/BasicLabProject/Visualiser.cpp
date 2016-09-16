@@ -12,12 +12,12 @@ bool bFullsreen = false;
 int nWindowID;
 
 // camera attributes
-float viewerPosition[3] = { -36.88, -28.0, -60.0 };
+float viewerPosition[3] = { -36.88, -28.0, -400.0 };
 float viewerDirection[3] = { 50.0, 0.0, 50.0 };
 float viewerUp[3] = { 0.0, 1.0, 0.0 };
 
 // rotation values for the navigation
-float navigationRotation[3] = { 50.0, 100.0, 0.0 };
+float navigationRotation[3] = { 53.0, 120.0, 0.0 };
 
 // parameters for the framecounter
 char pixelstring[30];

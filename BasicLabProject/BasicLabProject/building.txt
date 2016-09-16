@@ -1,0 +1,46 @@
+main => S(0,0,110) RealRepeat(2,4){main2}
+main2 => S(110,0,0) RealRepeat(0,4){main3}
+main3 => S(rnd<40-80>,rnd<100-250>,rnd<60-100>) Subdiv(1,r0.2,r0.75,r0.05){facadeMain,body,top}
+building => S(rnd<40-80>,rnd<100-250>,rnd<60-100>) Subdiv(1,r0.2,r0.75,r0.05){facadeMain,body,top}
+# Top of the building
+top => Subdiv(0,r0.05,r0.9,r0.05){tile,top_mid,tile}
+top_mid => Subdiv(2,r0.05,r0.9,r0.05){tile,top_center,tile}
+#
+top_center => Subdiv(0,r0.2,r0.6,r0.2){tile2,top_mid2,tile2}
+top_mid2 => Subdiv(2,r0.2,r0.6,r0.2){tile2,top_center2,tile2}
+#
+top_center2 => I(cube){blocks} 
+tile2 => S(-1001,2,-1001) I(cube){concrete}
+#
+#Facade 
+facadeMain => Subdiv(1,r0.9,r0.1){facade,divider}
+facade => Subdiv(2,r0.33,r0.34,r0.33){facadeL,facadeM,facadeL}
+# Left Side of facade
+facadeL => Subdiv(1,r0.33,r0.34,r0.33){facadeLp,facadeLp,facadeLp}
+facadeLp => Subdiv(1,r0.2,r0.8,r0.0){tile,flpm,tile}
+flpm => Subdiv(2,r0.1,r0.8,r0.1){flpm2,ggflpm,flpm2}
+flpm2 => Subdiv(0,r0.1,r0.8,r0.1){tile,ggflpm2,tile}
+ggflpm => Subdiv(0,r0.1,r0.8,r0.1){__,glass2,__}
+facadeM => Repeat(1,rnd<1-8>){facadeLp}
+#
+facadeM => Repeat(1,rnd<1-4>){facadeMp}
+#facedeMp => Subdiv(1,r0.2,r0.6,r0.2){tile,facedeMp_mid,tile}
+#facedeMp_mid
+#
+# Body
+body => Subdiv(2,r0.1,r0.8,r0.1){btile1,body2,btile2}
+btile1 => Subdiv(0,r0.1,r0.8,r0.1){tile,btile1c,tile}
+btile1c => T(0,0,-5) Comp(all){win,win,win,win,ptile,ptile}
+btile2 => Subdiv(0,r0.1,r0.8,r0.1){tile,btile2c,tile}
+btile2c => T(0,0,5) Comp(all){win,win,win,win,ptile,ptile}
+body2 => Subdiv(0,r0.5,r0.5){bb,bb2}
+bb => T(-5,0,0) Comp(all){win,win,win,win,ptile,ptile}
+bb2 => T(5,0,0) Comp(all){win,win,win,win,ptile,ptile}
+#
+#
+#Materials
+divider => I(cube){blocks}
+glass2 => I(cube){glass}
+tile => I(cube){blocks} 
+win => I(plain){windows}
+ptile => I(plain){concrete}
