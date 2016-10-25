@@ -1,4 +1,17 @@
 # Procedural-Modeling-of-Buildings
 
-#### 3D Graphics basic Theory
- [https://www.ntu.edu.sg/home/ehchua/programming/opengl/CG_BasicsTheory.html](https://www.ntu.edu.sg/home/ehchua/programming/opengl/CG_BasicsTheory.html)
+Implemention of the state-of-the-art techniques from the area of computer
+graphics
+
+#### Goals:
+- Implementation of a procedural modeling program
+- Automatic generation of Building geometry
+
+#### Tasks:
+- Parsing: specify a grammar file format
+- Modelling: implement Derivation Tree
+- Visualization: Draw Derivation Tree
+
+
+
+
