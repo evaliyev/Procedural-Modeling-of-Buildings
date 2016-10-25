@@ -9,9 +9,11 @@ graphics
 
 #### Tasks:
 - Parsing: specify a grammar file format
-- Modelling: implement Derivation Tree
-- Visualization: Draw Derivation Tree
+- Modelling: implement derivation tree
+- Visualization: draw derivation tree (with OpenGL)
+![steps](steps.png)
 
-
-
+### Obtained results:
+![](screenshots/screenshot.PNG)
+![](screenshots/screenshot2.PNG)
 
